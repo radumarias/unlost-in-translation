@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlost In Translation - Detailed Project Plan</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --bg-main: #f9fafb;
+            --bg-card: #ffffff;
+            --border: #e5e7eb;
+            --warning: #fef08a;
+            --warning-border: #facc15;
+            --success: #bbf7d0;
+            --success-border: #4ade80;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: var(--bg-main);
+        }
+        h1 { color: var(--text-main); border-bottom: 3px solid var(--primary); padding-bottom: 0.5rem; margin-bottom: 2rem;}
+        h2 { color: var(--primary); margin-top: 2.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;}
+        h3 { color: var(--text-main); margin-top: 1.5rem; }
+        .section {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            margin-bottom: 2.5rem;
+            border: 1px solid var(--border);
+        }
+        ul, ol { padding-left: 1.5rem; color: var(--text-muted); }
+        li { margin-bottom: 0.75rem; }
+        .highlight-warning { background-color: var(--warning); border-left: 4px solid var(--warning-border); padding: 0.5rem 1rem; border-radius: 0 4px 4px 0; margin: 1rem 0;}
+        .highlight-success { background-color: var(--success); border-left: 4px solid var(--success-border); padding: 0.5rem 1rem; border-radius: 0 4px 4px 0; margin: 1rem 0;}
+        code { background-color: var(--bg-main); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em; border: 1px solid var(--border); color: #be185d;}
+        .flow-diagram { background: var(--text-main); color: white; padding: 1rem; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 0.9em; overflow-x: auto; margin: 1.5rem 0;}
+    </style>
+</head>
+<body>
+    <h1>Unlost In Translation</h1>
+    <p><em>Ensuring message meaning is preserved across languages and cultures. An architecture and roadmap document.</em></p>
+
+    <div class="section">
+        <h2>1. The Core Idea & Value Proposition</h2>
+        <p>Traditional translation tools (like Google Translate) map words to words. They often fail when context changes (e.g., "bank" of a river vs. financial "bank"), when idioms are used ("break a leg"), or when tone dictates vocabulary (formal vs. informal). <strong>Unlost In Translation</strong> solves this by shifting from <em>literal translation</em> to <em>intent and semantic translation</em>.</p>
+        
+        <h3>Key Differentiators:</h3>
+        <ul>
+            <li><strong>The Sanity Check Badge:</strong> Before the translation is delivered to the receiver, the sender gets a short back-translation representing <em>how the message will be perceived</em> in the target language. This provides immediate confidence.</li>
+            <li><strong>Context Sliding Window:</strong> The app maintains a running history (e.g., the last 5-10 messages). The LLM uses this to disambiguate words and maintain a consistent tone (e.g., remembering that the conversation is about fishing, not finance).</li>
+            <li><strong>Cultural & Offense Flags:</strong> If an expression translates literally into something offensive or highly unnatural in the target culture, the AI blocks or flags the translation and suggests a localized alternative.</li>
+            <li><strong>Shared AI Room (3-Party Architecture):</strong> The conversation is treated as a room with three participants: User A, User B, and the AI Interpreter. This allows for seamless transitions from sharing one screen to connecting remotely via a link.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>2. Detailed User Experience (UX) Flow</h2>
+        <p>The UX is designed to minimize friction while maximizing trust. Here is the step-by-step flow for an in-person interaction:</p>
+        
+        <ol>
+            <li><strong>Initialization:</strong> User A selects their language (English) and User B's language (Spanish). The app establishes an empty context window.</li>
+            <li><strong>Input:</strong> User A taps the microphone and speaks: <em>"This food is the bomb!"</em> (Idiom for 'delicious').</li>
+            <li><strong>Processing:</strong>
+                <ul>
+                    <li>The device records audio and sends it to the STT (Speech-to-Text) backend.</li>
+                    <li>The backend receives "This food is the bomb!"</li>
+                    <li>The LLM translates it contextually. It realizes "the bomb" in a restaurant context means excellent, not an explosive.</li>
+                </ul>
+            </li>
+            <li><strong>Sanity Check & Output Generation:</strong>
+                <ul>
+                    <li><strong>Target Translation:</strong> "¡Esta comida es increíble!"</li>
+                    <li><strong>Back-translation (Intent):</strong> "This food is incredible!"</li>
+                    <li><strong>Cultural Flag:</strong> None (it successfully bypassed a literal translation of 'bomba').</li>
+                </ul>
+            </li>
+            <li><strong>Review & Delivery:</strong>
+                <div class="highlight-success">
+                    <strong>UI displays to User A:</strong><br>
+                    Original: "This food is the bomb!"<br>
+                    Sanity Check: <em>Translated as: "This food is incredible." (Safe)</em>
+                </div>
+                <p>If Auto-Send is off, User A taps "Approve". The device rotates the text "¡Esta comida es increíble!" toward User B and plays the TTS (Text-to-Speech) audio in Spanish.</p>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>3. Technical Discussions & Stack Decisions</h2>
+        <p>A deep dive into why specific technologies were chosen over alternatives to achieve low latency, high quality, and multi-device support.</p>
+        
+        <h3>Frontend Frameworks</h3>
+        <ul>
+            <li><strong>Kotlin Multiplatform (KMP):</strong> Considered for native Android/iOS performance. <em>Rejected</em> for now because the ecosystem for cross-platform audio streaming and custom UI rendering is less mature than Flutter, requiring more boilerplate Swift code for iOS.</li>
+            <li><strong>Flutter:</strong> <em>Selected for Phase 2.</em> Offers excellent "Hot Reload" for rapid UI iteration, paints identical custom UIs on both OSs, and has highly mature, battle-tested packages for Audio Recording (e.g., <code>record</code>), playing (e.g., <code>just_audio</code>), and WebSocket management.</li>
+            <li><strong>React / Next.js (Web):</strong> <em>Selected for Phase 1 (Validation) and Phase 3 (Remote Mode).</em> A Progressive Web App (PWA) allows instantaneous distribution for testing. Later, it becomes the backbone for the "connect via link" remote feature.</li>
+        </ul>
+        
+        <h3>Audio Pipeline (STT/TTS)</h3>
+        <ul>
+            <li><strong>Native Web Speech APIs:</strong> <em>Rejected.</em> They are free, but completely unreliable across different browsers (especially Apple devices). Quality is poor for accents.</li>
+            <li><strong>Cloud Pipeline (Chosen Approach):</strong> The device is a "dumb microphone/speaker". Audio is streamed to a backend. 
+                <ul>
+                    <li><strong>STT:</strong> OpenAI Whisper API (or Google Cloud Speech). Extremely resilient to background noise and accents.</li>
+                    <li><strong>TTS:</strong> OpenAI TTS or ElevenLabs for hyper-realistic voices that can convey emotion, avoiding the "robotic" feel of standard OS voices.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>Backend Hosting & Serverless vs. WebSockets (Vercel)</h3>
+        <p>For the backend, we considered <strong>Vercel</strong> because it supports both Node.js (Next.js native) and Python (via serverless functions in the <code>api/</code> directory). However, there is a critical architectural consideration:</p>
+        <ul>
+            <li><strong>The Serverless Limitation:</strong> Vercel functions are stateless and spin down immediately after responding. Therefore, Vercel <strong>does not support persistent WebSockets</strong> natively.</li>
+            <li><strong>Phase 1 Solution:</strong> We will use standard HTTP POST requests on Vercel. The phone records audio, sends the file to Vercel, waits for processing, and receives the response. This is incredibly fast to build and perfect for validating the idea.</li>
+            <li><strong>Phase 2 Solution:</strong> When we transition to live audio streaming for lower latency, we will keep the AI logic on Vercel but route the audio streams through a third-party real-time service (like <strong>LiveKit</strong>, <strong>Supabase Realtime</strong>, or <strong>Pusher</strong>) that handles the persistent WebSocket connections.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>4. Phased Implementation Plan</h2>
+        
+        <h3>Architecture Overview</h3>
+        <div class="flow-diagram">
+[Client: Web/Mobile/Watch]
+  |  (Audio Blob over HTTPS / WebSocket)
+  v
+[Backend: Vercel Serverless (Next.js or Python)]
+  |-- 1. STT Service (Whisper: Audio -> Text)
+  |-- 2. Session Store (Redis/Memory: Fetches last 5 messages)
+  |-- 3. LLM Service (Gemini/OpenAI: Text + Context -> Translation + Sanity Check)
+  |-- 4. TTS Service (ElevenLabs: Translation Text -> Audio Blob)
+  v
+[Client: Web/Mobile/Watch] (Receives JSON data + Audio Blob)
+        </div>
+        
+        <h3>Phase 1: Validation Prototype (Fastest Iteration)</h3>
+        <p><strong>Goal:</strong> Test the core hypothesis—does the Sanity Check badge actually build trust and catch errors?</p>
+        <ul>
+            <li><strong>Stack:</strong> Next.js (React) Web App deployed on Vercel. Python FastAPI or Next.js API Routes for the backend.</li>
+            <li><strong>Networking:</strong> Standard HTTP POST requests (upload audio file, await response) since Vercel does not support WebSockets.</li>
+            <li><strong>Features:</strong>
+                <ul>
+                    <li>Push-to-talk button using browser MediaRecorder API.</li>
+                    <li>Basic split-screen CSS layout.</li>
+                    <li>Hardcoded LLM prompts to enforce the output JSON format: <code>{ translation: "", intent: "", warning: null }</code>.</li>
+                </ul>
+            </li>
+            <li><strong>Testing:</strong> Can be loaded instantly on any phone via URL. No app store reviews required.</li>
+        </ul>
+
+        <h3>Phase 2: The Production Mobile App</h3>
+        <p><strong>Goal:</strong> A polished, native-feeling app for daily in-person use with real-time speed.</p>
+        <ul>
+            <li><strong>Stack:</strong> Flutter for iOS and Android.</li>
+            <li><strong>Networking upgrade:</strong> Integrate a real-time service (e.g., LiveKit or Supabase) alongside Vercel to support low-latency WebSockets for live audio streaming.</li>
+            <li><strong>Features:</strong>
+                <ul>
+                    <li>Complex UI animations (screen flipping, pulsing microphones).</li>
+                    <li>Background audio playback, volume normalization.</li>
+                    <li>Offline fallbacks (using on-device translation models for basic words if internet drops).</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>Phase 3: Ecosystem Expansion (Wearables & Remote)</h3>
+        <p><strong>Goal:</strong> True ubiquitous communication.</p>
+        <ul>
+            <li><strong>Remote Link Sharing:</strong> User A generates a session link (e.g., <code>unlost.app/s/8f2a</code>) from the Flutter app. User B opens it in their browser (the Next.js app from Phase 1) to join the 3-party AI room remotely.</li>
+            <li><strong>Apple Watch / WearOS:</strong> Build a lightweight native WatchOS app (SwiftUI/Kotlin). Since the backend does all the work, the watch only needs to record audio, send it via HTTP/Sockets, display text, and play the response.</li>
+        </ul>
+    </div>
+</body>
+</html>

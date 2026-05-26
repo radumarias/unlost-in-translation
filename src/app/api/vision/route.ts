@@ -11,18 +11,16 @@ const google = createGoogleGenerativeAI({
 
 export async function POST(req: Request) {
   try {
-    const { imageBase64, sourceLanguage, targetLanguage } = await req.json();
+    const { imageBase64, targetLanguage } = await req.json();
 
-    if (!imageBase64 || !sourceLanguage || !targetLanguage) {
+    if (!imageBase64 || !targetLanguage) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const systemPrompt = `You are an expert translator and cultural guide. You will be provided with an image containing text in ${sourceLanguage}. 
-Your goal is to:
-1. Read the text in the image.
-2. Translate it into ${targetLanguage}.
-3. If the image is of a menu, a sign, or a cultural item, provide a brief explanation of what it actually is in ${targetLanguage}. For example, if it's "Takoyaki", explain that it's "Fried octopus balls".
-Keep the explanation concise and helpful.`;
+    const systemPrompt = `You are a helpful translation assistant.
+You must analyze the image, detect the language of any prominent text, transcribe it, and translate it into the requested target language.
+Pay attention to cultural nuances and provide a brief explanation if it is a specific food, sign, or cultural item.
+The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai.`;
 
     // Remove the data URI prefix (e.g., data:image/jpeg;base64,) if present
     const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
@@ -31,7 +29,8 @@ Keep the explanation concise and helpful.`;
       model: google('gemini-2.5-flash'),
       system: systemPrompt,
       schema: z.object({
-        originalText: z.string().describe(`A summary or transcription of the text found in the image in ${sourceLanguage}. Keep it short.`),
+        detectedLanguage: z.string().describe(`The detected language of the text. Must be one of the supported languages.`),
+        originalText: z.string().describe(`A summary or transcription of the text found in the image in its original language. Keep it short.`),
         translation: z.string().describe(`The translation and brief explanation in ${targetLanguage}.`),
       }),
       messages: [

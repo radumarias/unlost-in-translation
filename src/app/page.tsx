@@ -237,7 +237,6 @@ export default function Home() {
 
       const payload = {
         imageBase64: base64String,
-        sourceLanguage: targetLanguage, // taking picture of target language text
         targetLanguage: sourceLanguage, // translating it to my language
       };
 
@@ -250,11 +249,16 @@ export default function Home() {
       if (!response.ok) throw new Error('Vision failed');
       const data = await response.json();
 
+      const detectedLang = data.detectedLanguage || targetLanguage;
+      if (detectedLang !== targetLanguage) {
+        setTargetLanguage(detectedLang);
+      }
+
       setInteractions((prev) => [
         ...prev,
         {
           id: Math.random().toString(36).substring(7),
-          sourceLang: targetLanguage,
+          sourceLang: detectedLang,
           targetLang: sourceLanguage,
           originalText: data.originalText,
           translation: data.translation,

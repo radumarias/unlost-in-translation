@@ -8,7 +8,7 @@ const google = createGoogleGenerativeAI({
 
 export async function POST(req: Request) {
   try {
-    const { history = [], sourceLanguage = 'English', targetLanguage = 'Spanish', currentInput, skipChecks = false } = await req.json();
+    const { history = [], sourceLanguage = 'English', targetLanguage = 'Spanish', currentInput, skipChecks = false, tone = 'Auto' } = await req.json();
 
     if (!currentInput) {
       return Response.json({ error: 'Missing current input' }, { status: 400 });
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     if (skipChecks) {
       const result = await generateObject({
         model: google('gemini-2.5-flash'),
-        system: `You are a fast translator. Translate the active speaker's message from ${sourceLanguage} to ${targetLanguage}. Use the conversation history for context if needed.\n\nConversation History:\n${historyText}`,
+        system: `You are a fast translator. Translate the active speaker's message from ${sourceLanguage} to ${targetLanguage}. Use the conversation history for context if needed.\n\nConversation History:\n${historyText}\n\n${tone !== 'Auto' ? `Ensure the translation has a strictly ${tone} tone.` : ''}`,
         prompt: `Translate from ${sourceLanguage} to ${targetLanguage}: "${currentInput}"`,
         schema: z.object({
           translation: z.string().describe(`The ${targetLanguage} translation.`)
@@ -41,6 +41,7 @@ The active speaker (${sourceLanguage} Speaker) just said: "${currentInput}"
 
 Your task is to:
 1. Translate this new message into ${targetLanguage}, taking into account the context above.
+${tone !== 'Auto' ? `IMPORTANT: The requested conversation tone is "${tone}". The translation MUST reflect this tone accurately.` : ''}
 2. Provide a 'sanity check': a roundtrip back-translation explaining exactly how the ${targetLanguage} speaker will perceive the translation, written in ${sourceLanguage}.
 3. If the message contains an idiom, slang, or concept that translates literally into something offensive or highly unnatural, provide a warning. Otherwise, warning should be null.`;
 

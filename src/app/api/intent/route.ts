@@ -8,7 +8,7 @@ const google = createGoogleGenerativeAI({
 
 export async function POST(req: Request) {
   try {
-    const { history = [], sourceLanguage = 'English', targetLanguage = 'Spanish', currentInput } = await req.json();
+    const { history = [], sourceLanguage = 'English', targetLanguage = 'Spanish', currentInput, tone = 'Auto' } = await req.json();
 
     if (!currentInput) {
       return Response.json({ error: 'Missing current input' }, { status: 400 });
@@ -27,6 +27,7 @@ The active speaker (${sourceLanguage} Speaker) just said: "${currentInput}"
 
 Your task is to:
 1. Mentally translate this new message into ${targetLanguage}.
+${tone !== 'Auto' ? `IMPORTANT: The requested conversation tone is "${tone}". If the translated message violates this tone, you should consider that a cultural issue.` : ''}
 2. Provide a 'sanity check': a roundtrip back-translation explaining exactly how the ${targetLanguage} speaker will perceive the translation, written in ${sourceLanguage}.
 3. If the message contains an idiom, slang, or concept that translates literally into something offensive or highly unnatural, provide a warning. Otherwise, warning should be null.`;
 

@@ -13,7 +13,20 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     warning: 'Cultural Warning',
     discard: 'Discard',
     approve: 'Approve & Hand Over',
-    replyIn: 'Reply in'
+    replyIn: 'Reply in',
+    roundTrip: 'Back-translation',
+    generatingRoundTrip: 'Generating back-translation...',
+    suggestedFix: 'Suggested Fix',
+    useThisVersion: 'Use this version',
+    otherWaysToRewrite: 'Other ways to rewrite:',
+    generatingSuggestions: 'Generating suggestions...',
+    toneAuto: 'Auto Tone',
+    toneCasual: 'Casual',
+    toneFormal: 'Formal',
+    toneBusiness: 'Business',
+    tonePlayful: 'Playful',
+    toneEmpathetic: 'Empathetic',
+    toneDirect: 'Direct'
   },
   'Spanish': {
     noHistory: 'No hay historial.',
@@ -29,7 +42,20 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     warning: 'Advertencia Cultural',
     discard: 'Descartar',
     approve: 'Aprobar y Entregar',
-    replyIn: 'Responder en'
+    replyIn: 'Responder en',
+    roundTrip: 'Traducción inversa',
+    generatingRoundTrip: 'Generando traducción inversa...',
+    suggestedFix: 'Corrección Sugerida',
+    useThisVersion: 'Usar esta versión',
+    otherWaysToRewrite: 'Otras formas de reescribir:',
+    generatingSuggestions: 'Generando sugerencias...',
+    toneAuto: 'Tono Automático',
+    toneCasual: 'Casual',
+    toneFormal: 'Formal',
+    toneBusiness: 'Negocios',
+    tonePlayful: 'Juguetón',
+    toneEmpathetic: 'Empático',
+    toneDirect: 'Directo'
   },
   'Romanian': {
     noHistory: 'Niciun istoric.',
@@ -45,37 +71,120 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     warning: 'Avertisment Cultural',
     discard: 'Renunță',
     approve: 'Aprobă & Predă',
-    replyIn: 'Răspunde în'
+    replyIn: 'Răspunde în',
+    roundTrip: 'Traducere inversă',
+    generatingRoundTrip: 'Se generează traducerea inversă...',
+    suggestedFix: 'Corecție Sugerată',
+    useThisVersion: 'Folosește această versiune',
+    otherWaysToRewrite: 'Alte moduri de a rescrie:',
+    generatingSuggestions: 'Se generează sugestii...',
+    toneAuto: 'Ton Automat',
+    toneCasual: 'Casual',
+    toneFormal: 'Formal',
+    toneBusiness: 'Afaceri',
+    tonePlayful: 'Jucăuș',
+    toneEmpathetic: 'Empatic',
+    toneDirect: 'Direct'
   },
   'French': {
-    noHistory: 'Aucun historique.', closeHistory: "Fermer l'historique", you: 'Vous', translatingTo: 'Traduction vers', typeHere: 'Tapez ici...', checkingIntent: "Vérification de l'intention...", checkIntent: "Vérifier l'intention & Traduire", translating: 'Traduction...', directTranslate: 'Traduction Directe', sanityCheck: 'Vérification de Sens', warning: 'Avertissement Culturel', discard: 'Ignorer', approve: 'Approuver & Passer', replyIn: 'Répondre en'
+    noHistory: 'Aucun historique.', closeHistory: "Fermer l'historique", you: 'Vous', translatingTo: 'Traduction vers', typeHere: 'Tapez ici...', checkingIntent: "Vérification de l'intention...", checkIntent: "Vérifier l'intention & Traduire", translating: 'Traduction...', directTranslate: 'Traduction Directe', sanityCheck: 'Vérification de Sens', warning: 'Avertissement Culturel', discard: 'Ignorer', approve: 'Approuver & Passer', replyIn: 'Répondre en', roundTrip: 'Rétro-traduction', generatingRoundTrip: 'Génération de la rétro-traduction...', suggestedFix: 'Correction Suggérée', useThisVersion: 'Utiliser cette version', otherWaysToRewrite: 'Autres façons de réécrire :', generatingSuggestions: 'Génération de suggestions...',
+    toneAuto: 'Ton Auto',
+    toneCasual: 'Décontracté',
+    toneFormal: 'Formel',
+    toneBusiness: 'Affaires',
+    tonePlayful: 'Enjoué',
+    toneEmpathetic: 'Empathique',
+    toneDirect: 'Direct'
   },
   'German': {
-    noHistory: 'Kein Chat-Verlauf.', closeHistory: 'Verlauf schließen', you: 'Du', translatingTo: 'Übersetzen nach', typeHere: 'Hier tippen...', checkingIntent: 'Absicht wird geprüft...', checkIntent: 'Absicht prüfen & Übersetzen', translating: 'Übersetzen...', directTranslate: 'Direkt übersetzen', sanityCheck: 'Sinnprüfung', warning: 'Kulturelle Warnung', discard: 'Verwerfen', approve: 'Genehmigen & Übergeben', replyIn: 'Antworten auf'
+    noHistory: 'Kein Chat-Verlauf.', closeHistory: 'Verlauf schließen', you: 'Du', translatingTo: 'Übersetzen nach', typeHere: 'Hier tippen...', checkingIntent: 'Absicht wird geprüft...', checkIntent: 'Absicht prüfen & Übersetzen', translating: 'Übersetzen...', directTranslate: 'Direkt übersetzen', sanityCheck: 'Sinnprüfung', warning: 'Kulturelle Warnung', discard: 'Verwerfen', approve: 'Genehmigen & Übergeben', replyIn: 'Antworten auf', roundTrip: 'Rückübersetzung', generatingRoundTrip: 'Rückübersetzung wird erstellt...', suggestedFix: 'Vorgeschlagene Korrektur', useThisVersion: 'Diese Version verwenden', otherWaysToRewrite: 'Andere Formulierungsmöglichkeiten:', generatingSuggestions: 'Vorschläge werden generiert...',
+    toneAuto: 'Auto-Ton',
+    toneCasual: 'Locker',
+    toneFormal: 'Formell',
+    toneBusiness: 'Geschäftlich',
+    tonePlayful: 'Verspielt',
+    toneEmpathetic: 'Empathisch',
+    toneDirect: 'Direkt'
   },
   'Italian': {
-    noHistory: 'Nessuna cronologia.', closeHistory: 'Chiudi cronologia', you: 'Tu', translatingTo: 'Traduzione in', typeHere: 'Scrivi qui...', checkingIntent: 'Verifica Intenzione...', checkIntent: 'Verifica Intenzione & Traduci', translating: 'Traduzione...', directTranslate: 'Traduzione Diretta', sanityCheck: 'Controllo di Senso', warning: 'Avviso Culturale', discard: 'Scarta', approve: 'Approva e Passa', replyIn: 'Rispondi in'
+    noHistory: 'Nessuna cronologia.', closeHistory: 'Chiudi cronologia', you: 'Tu', translatingTo: 'Traduzione in', typeHere: 'Scrivi qui...', checkingIntent: 'Verifica Intenzione...', checkIntent: 'Verifica Intenzione & Traduci', translating: 'Traduzione...', directTranslate: 'Traduzione Diretta', sanityCheck: 'Controllo di Senso', warning: 'Avviso Culturale', discard: 'Scarta', approve: 'Approva e Passa', replyIn: 'Rispondi in', roundTrip: 'Traduzione inversa', generatingRoundTrip: 'Generazione traduzione inversa...', suggestedFix: 'Correzione Suggerita', useThisVersion: 'Usa questa versione', otherWaysToRewrite: 'Altri modi per riscrivere:', generatingSuggestions: 'Generazione suggerimenti...',
+    toneAuto: 'Tono Auto',
+    toneCasual: 'Casual',
+    toneFormal: 'Formale',
+    toneBusiness: 'Affari',
+    tonePlayful: 'Giocoso',
+    toneEmpathetic: 'Empatico',
+    toneDirect: 'Diretto'
   },
   'Portuguese': {
-    noHistory: 'Nenhum histórico.', closeHistory: 'Fechar Histórico', you: 'Você', translatingTo: 'Traduzindo para', typeHere: 'Digite aqui...', checkingIntent: 'Verificando Intenção...', checkIntent: 'Verificar Intenção e Traduzir', translating: 'Traduzindo...', directTranslate: 'Tradução Direta', sanityCheck: 'Verificação de Sentido', warning: 'Aviso Cultural', discard: 'Descartar', approve: 'Aprovar e Passar', replyIn: 'Responder em'
+    noHistory: 'Nenhum histórico.', closeHistory: 'Fechar Histórico', you: 'Você', translatingTo: 'Traduzindo para', typeHere: 'Digite aqui...', checkingIntent: 'Verificando Intenção...', checkIntent: 'Verificar Intenção e Traduzir', translating: 'Traduzindo...', directTranslate: 'Tradução Direta', sanityCheck: 'Verificação de Sentido', warning: 'Aviso Cultural', discard: 'Descartar', approve: 'Aprovar e Passar', replyIn: 'Responder em', roundTrip: 'Tradução reversa', generatingRoundTrip: 'Gerando tradução reversa...', suggestedFix: 'Correção Sugerida', useThisVersion: 'Usar esta versão', otherWaysToRewrite: 'Outras formas de reescrever:', generatingSuggestions: 'Gerando sugestões...',
+    toneAuto: 'Tom Automático',
+    toneCasual: 'Casual',
+    toneFormal: 'Formal',
+    toneBusiness: 'Negócios',
+    tonePlayful: 'Brincalhão',
+    toneEmpathetic: 'Empático',
+    toneDirect: 'Direto'
   },
   'Japanese': {
-    noHistory: '履歴がありません。', closeHistory: '履歴を閉じる', you: 'あなた', translatingTo: '翻訳先', typeHere: 'ここに入力...', checkingIntent: '意図を確認中...', checkIntent: '意図を確認して翻訳', translating: '翻訳中...', directTranslate: '直接翻訳', sanityCheck: '意味の確認', warning: '文化的警告', discard: '破棄', approve: '承認して渡す', replyIn: '返信する言語:'
+    noHistory: '履歴がありません。', closeHistory: '履歴を閉じる', you: 'あなた', translatingTo: '翻訳先', typeHere: 'ここに入力...', checkingIntent: '意図を確認中...', checkIntent: '意図を確認して翻訳', translating: '翻訳中...', directTranslate: '直接翻訳', sanityCheck: '意味の確認', warning: '文化的警告', discard: '破棄', approve: '承認して渡す', replyIn: '返信する言語:', roundTrip: '逆翻訳', generatingRoundTrip: '逆翻訳を生成中...', suggestedFix: '提案された修正', useThisVersion: 'このバージョンを使用', otherWaysToRewrite: '他の書き換え方法:', generatingSuggestions: '提案を生成中...',
+    toneAuto: '自動トーン',
+    toneCasual: 'カジュアル',
+    toneFormal: 'フォーマル',
+    toneBusiness: 'ビジネス',
+    tonePlayful: '遊び心',
+    toneEmpathetic: '共感的',
+    toneDirect: '直接的'
   },
   'Chinese (Mandarin)': {
-    noHistory: '暂无聊天记录。', closeHistory: '关闭记录', you: '你', translatingTo: '翻译为', typeHere: '在此输入...', checkingIntent: '正在检查意图...', checkIntent: '检查意图并翻译', translating: '翻译中...', directTranslate: '直接翻译', sanityCheck: '合理性检查', warning: '文化警告', discard: '放弃', approve: '批准并交出', replyIn: '回复语言：'
+    noHistory: '暂无聊天记录。', closeHistory: '关闭记录', you: '你', translatingTo: '翻译为', typeHere: '在此输入...', checkingIntent: '正在检查意图...', checkIntent: '检查意图并翻译', translating: '翻译中...', directTranslate: '直接翻译', sanityCheck: '合理性检查', warning: '文化警告', discard: '放弃', approve: '批准并交出', replyIn: '回复语言：', roundTrip: '反向翻译', generatingRoundTrip: '正在生成反向翻译...', suggestedFix: '建议修改', useThisVersion: '使用此版本', otherWaysToRewrite: '其他重写方式:', generatingSuggestions: '正在生成建议...',
+    toneAuto: '自动语气',
+    toneCasual: '随便',
+    toneFormal: '正式',
+    toneBusiness: '商务',
+    tonePlayful: '调皮',
+    toneEmpathetic: '同情',
+    toneDirect: '直接'
   },
   'Korean': {
-    noHistory: '채팅 기록이 없습니다.', closeHistory: '기록 닫기', you: '나', translatingTo: '번역 대상', typeHere: '여기에 입력...', checkingIntent: '의도 확인 중...', checkIntent: '의도 확인 및 번역', translating: '번역 중...', directTranslate: '직접 번역', sanityCheck: '의미 확인', warning: '문화적 경고', discard: '취소', approve: '승인 및 넘기기', replyIn: '답장 언어:'
+    noHistory: '채팅 기록이 없습니다.', closeHistory: '기록 닫기', you: '나', translatingTo: '번역 대상', typeHere: '여기에 입력...', checkingIntent: '의도 확인 중...', checkIntent: '의도 확인 및 번역', translating: '번역 중...', directTranslate: '직접 번역', sanityCheck: '의미 확인', warning: '문화적 경고', discard: '취소', approve: '승인 및 넘기기', replyIn: '답장 언어:', roundTrip: '역번역', generatingRoundTrip: '역번역 생성 중...', suggestedFix: '제안된 수정', useThisVersion: '이 버전 사용', otherWaysToRewrite: '다른 다시 쓰기 방법:', generatingSuggestions: '제안 생성 중...',
+    toneAuto: '자동 톤',
+    toneCasual: '캐주얼',
+    toneFormal: '격식',
+    toneBusiness: '비즈니스',
+    tonePlayful: '장난스러운',
+    toneEmpathetic: '공감하는',
+    toneDirect: '직접적인'
   },
   'Russian': {
-    noHistory: 'Нет истории.', closeHistory: 'Закрыть историю', you: 'Вы', translatingTo: 'Перевод на', typeHere: 'Введите текст...', checkingIntent: 'Проверка намерений...', checkIntent: 'Проверить намерение и перевести', translating: 'Перевод...', directTranslate: 'Прямой перевод', sanityCheck: 'Проверка смысла', warning: 'Культурное предупреждение', discard: 'Отменить', approve: 'Одобрить и передать', replyIn: 'Ответить на'
+    noHistory: 'Нет истории.', closeHistory: 'Закрыть историю', you: 'Вы', translatingTo: 'Перевод на', typeHere: 'Введите текст...', checkingIntent: 'Проверка намерений...', checkIntent: 'Проверить намерение и перевести', translating: 'Перевод...', directTranslate: 'Прямой перевод', sanityCheck: 'Проверка смысла', warning: 'Культурное предупреждение', discard: 'Отменить', approve: 'Одобрить и передать', replyIn: 'Ответить на', roundTrip: 'Обратный перевод', generatingRoundTrip: 'Создание обратного перевода...', suggestedFix: 'Предлагаемое исправление', useThisVersion: 'Использовать эту версию', otherWaysToRewrite: 'Другие способы переписать:', generatingSuggestions: 'Создание предложений...',
+    toneAuto: 'Авто Тон',
+    toneCasual: 'Повседневный',
+    toneFormal: 'Формальный',
+    toneBusiness: 'Деловой',
+    tonePlayful: 'Игривый',
+    toneEmpathetic: 'Чуткий',
+    toneDirect: 'Прямой'
   },
   'Arabic': {
-    noHistory: 'لا يوجد سجل للمحادثة.', closeHistory: 'إغلاق السجل', you: 'أنت', translatingTo: 'ترجمة إلى', typeHere: 'اكتب هنا...', checkingIntent: 'التحقق من القصد...', checkIntent: 'التحقق من القصد والترجمة', translating: 'جاري الترجمة...', directTranslate: 'ترجمة مباشرة', sanityCheck: 'التحقق من المعنى', warning: 'تحذير ثقافي', discard: 'تجاهل', approve: 'موافقة وتسليم', replyIn: 'الرد بـ'
+    noHistory: 'لا يوجد سجل للمحادثة.', closeHistory: 'إغلاق السجل', you: 'أنت', translatingTo: 'ترجمة إلى', typeHere: 'اكتب هنا...', checkingIntent: 'التحقق من القصد...', checkIntent: 'التحقق من القصد والترجمة', translating: 'جاري الترجمة...', directTranslate: 'ترجمة مباشرة', sanityCheck: 'التحقق من المعنى', warning: 'تحذير ثقافي', discard: 'تجاهل', approve: 'موافقة وتسليم', replyIn: 'الرد بـ', roundTrip: 'ترجمة عكسية', generatingRoundTrip: 'جاري إنشاء ترجمة عكسية...', suggestedFix: 'إصلاح مقترح', useThisVersion: 'استخدم هذه النسخة', otherWaysToRewrite: 'طرق أخرى لإعادة الكتابة:', generatingSuggestions: 'جاري إنشاء اقتراحات...',
+    toneAuto: 'نغمة تلقائية',
+    toneCasual: 'غير رسمي',
+    toneFormal: 'رسمي',
+    toneBusiness: 'عمل',
+    tonePlayful: 'مرح',
+    toneEmpathetic: 'متعاطف',
+    toneDirect: 'مباشر'
   },
   'Thai': {
-    noHistory: 'ไม่มีประวัติการแชท', closeHistory: 'ปิดประวัติ', you: 'คุณ', translatingTo: 'แปลเป็น', typeHere: 'พิมพ์ที่นี่...', checkingIntent: 'กำลังตรวจสอบเจตนา...', checkIntent: 'ตรวจสอบเจตนา & แปล', translating: 'กำลังแปล...', directTranslate: 'แปลโดยตรง', sanityCheck: 'ตรวจสอบความเข้าใจ', warning: 'คำเตือนทางวัฒนธรรม', discard: 'ยกเลิก', approve: 'อนุมัติ & ส่งต่อ', replyIn: 'ตอบกลับเป็น'
+    noHistory: 'ไม่มีประวัติการแชท', closeHistory: 'ปิดประวัติ', you: 'คุณ', translatingTo: 'แปลเป็น', typeHere: 'พิมพ์ที่นี่...', checkingIntent: 'กำลังตรวจสอบเจตนา...', checkIntent: 'ตรวจสอบเจตนา & แปล', translating: 'กำลังแปล...', directTranslate: 'แปลโดยตรง', sanityCheck: 'ตรวจสอบความเข้าใจ', warning: 'คำเตือนทางวัฒนธรรม', discard: 'ยกเลิก', approve: 'อนุมัติ & ส่งต่อ', replyIn: 'ตอบกลับเป็น', roundTrip: 'แปลกลับ', generatingRoundTrip: 'กำลังสร้างคำแปลกลับ...', suggestedFix: 'การแก้ไขที่แนะนำ', useThisVersion: 'ใช้เวอร์ชันนี้', otherWaysToRewrite: 'วิธีอื่นๆ ในการเขียนใหม่:', generatingSuggestions: 'กำลังสร้างคำแนะนำ...',
+    toneAuto: 'น้ำเสียงอัตโนมัติ',
+    toneCasual: 'เป็นกันเอง',
+    toneFormal: 'เป็นทางการ',
+    toneBusiness: 'ธุรกิจ',
+    tonePlayful: 'ขี้เล่น',
+    toneEmpathetic: 'เห็นอกเห็นใจ',
+    toneDirect: 'ตรงไปตรงมา'
   }
 };
 

@@ -911,13 +911,17 @@ export default function Home() {
                   "{draft.sanity_check}"
                 </p>
                 
-                {draft.warning && (
+                {(draft.warning || draft.idiom_explanation) && (
                   <div className="mt-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50 text-amber-900 dark:text-amber-200 rounded-2xl p-4 text-sm font-medium">
-                    <strong className="text-amber-800 dark:text-amber-400">⚠️ {getStr(sourceLanguage, 'warning')}</strong>
-                    <p className="mt-1 opacity-90">{draft.warning}</p>
+                    {draft.warning && (
+                      <div className="mb-3">
+                        <strong className="text-amber-800 dark:text-amber-400">⚠️ {getStr(sourceLanguage, 'warning')}</strong>
+                        <p className="mt-1 opacity-90">{draft.warning}</p>
+                      </div>
+                    )}
 
                     {draft.idiom_explanation && (
-                      <div className="mt-3 pt-3 border-t border-amber-200/50 dark:border-amber-700/30">
+                      <div className={draft.warning ? "pt-3 border-t border-amber-200/50 dark:border-amber-700/30" : ""}>
                         <strong className="text-amber-800 dark:text-amber-400">💡 Idiom Explanation</strong>
                         <p className="mt-1 opacity-90">{draft.idiom_explanation}</p>
                       </div>

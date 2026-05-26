@@ -237,7 +237,8 @@ export default function Home() {
 
       const payload = {
         imageBase64: base64String,
-        targetLanguage: sourceLanguage, // translating it to my language
+        userLanguage: sourceLanguage,
+        otherLanguage: targetLanguage,
       };
 
       const response = await fetch('/api/vision', {
@@ -250,16 +251,19 @@ export default function Home() {
       const data = await response.json();
 
       const detectedLang = data.detectedLanguage || targetLanguage;
-      if (detectedLang !== targetLanguage) {
+      
+      if (detectedLang !== sourceLanguage && detectedLang !== targetLanguage) {
         setTargetLanguage(detectedLang);
       }
+
+      const translationTargetLang = detectedLang === sourceLanguage ? targetLanguage : sourceLanguage;
 
       setInteractions((prev) => [
         ...prev,
         {
           id: Math.random().toString(36).substring(7),
           sourceLang: detectedLang,
-          targetLang: sourceLanguage,
+          targetLang: translationTargetLang,
           originalText: data.originalText,
           translation: data.translation,
           imageUrl: base64String,

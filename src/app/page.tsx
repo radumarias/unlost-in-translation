@@ -128,6 +128,7 @@ export default function Home() {
   const [isSituationMenuOpen, setIsSituationMenuOpen] = useState(false);
   const [isSourceMenuOpen, setIsSourceMenuOpen] = useState(false);
   const [isTargetMenuOpen, setIsTargetMenuOpen] = useState(false);
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   
   // Viewport height for mobile keyboard handling
   const [viewportHeight, setViewportHeight] = useState('100dvh');
@@ -139,6 +140,7 @@ export default function Home() {
   const situationMenuRef = useRef<HTMLDivElement>(null);
   const sourceMenuRef = useRef<HTMLDivElement>(null);
   const targetMenuRef = useRef<HTMLDivElement>(null);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -147,6 +149,9 @@ export default function Home() {
       }
       if (situationMenuRef.current && !situationMenuRef.current.contains(event.target as Node)) {
         setIsSituationMenuOpen(false);
+      }
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target as Node)) {
+        setIsMoreMenuOpen(false);
       }
       if (sourceMenuRef.current && !sourceMenuRef.current.contains(event.target as Node)) {
         setIsSourceMenuOpen(false);
@@ -422,8 +427,8 @@ export default function Home() {
 
           setDraft(prev => prev ? { ...prev, sanity_check: data.sanity_check, warning: data.warning, idiom_explanation: data.idiom_explanation, sourceLang: detectedSource } : null);
 
-          if (data.warning) {
-            fetchInitialRewrite(payload.currentInput, data.warning);
+          if (data.warning || data.idiom_explanation) {
+            fetchInitialRewrite(payload.currentInput, data.warning || data.idiom_explanation);
           }
         });
 
@@ -696,30 +701,105 @@ export default function Home() {
         </div>
         
         <div className="flex items-center space-x-1 justify-end flex-1">
-          <div className="relative" ref={situationMenuRef}>
-            <button
-              onClick={() => setIsSituationMenuOpen(!isSituationMenuOpen)}
-              className="flex items-center space-x-1 px-3 py-1.5 mr-1 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-2xl transition-colors outline-none shadow-sm"
-              title="Conversation Context"
+          {/* Desktop inline items */}
+          <div className="hidden sm:flex items-center space-x-1">
+            <div className="relative" ref={situationMenuRef}>
+              <button
+                onClick={() => setIsSituationMenuOpen(!isSituationMenuOpen)}
+                className="flex items-center space-x-1 px-3 py-1.5 mr-1 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-2xl transition-colors outline-none shadow-sm"
+                title="Conversation Context"
+              >
+                <span className="text-base">{SITUATIONS.find(s => s.id === situation)?.icon}</span>
+                <span className="hidden sm:inline-block ml-1 whitespace-nowrap">{getStr(sourceLanguage, SITUATIONS.find(s => s.id === situation)?.labelKey || 'sitGeneral')}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3 ml-1 text-gray-400">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+              </button>
+              
+              {isSituationMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 overflow-hidden z-50 transform origin-top-right transition-all">
+                  <div className="p-1.5">
+                    {SITUATIONS.map(s => (
+                      <button
+                        key={s.id}
+                        onClick={() => { setSituation(s.id); setIsSituationMenuOpen(false); }}
+                        className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold flex items-center space-x-3 transition-colors ${
+                          situation === s.id 
+                            ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' 
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                        }`}
+                      >
+                        <span className="text-xl">{s.icon}</span>
+                        <span>{getStr(sourceLanguage, s.labelKey)}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="relative" ref={toneMenuRef}>
+              <button
+                onClick={() => setIsToneMenuOpen(!isToneMenuOpen)}
+                className="flex items-center space-x-1 px-3 py-1.5 mr-1 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-2xl transition-colors outline-none shadow-sm"
+                title="Conversation Tone"
+              >
+                <span className="text-base">{TONES.find(t => t.id === tone)?.icon}</span>
+                <span className="hidden sm:inline-block ml-1 whitespace-nowrap">{getStr(sourceLanguage, TONES.find(t => t.id === tone)?.labelKey || 'toneAuto')}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3 ml-1 text-gray-400">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+              </button>
+              
+              {isToneMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 overflow-hidden z-50 transform origin-top-right transition-all">
+                  <div className="p-1.5">
+                    {TONES.map(t => (
+                      <button
+                        key={t.id}
+                        onClick={() => { setTone(t.id); setIsToneMenuOpen(false); }}
+                        className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold flex items-center space-x-3 transition-colors ${
+                          tone === t.id 
+                            ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' 
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                        }`}
+                      >
+                        <span className="text-xl">{t.icon}</span>
+                        <span>{getStr(sourceLanguage, t.labelKey)}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <button 
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 rounded-full transition-colors text-xl"
+              title="Toggle Theme"
             >
-              <span className="text-base">{SITUATIONS.find(s => s.id === situation)?.icon}</span>
-              <span className="hidden sm:inline-block ml-1 whitespace-nowrap">{getStr(sourceLanguage, SITUATIONS.find(s => s.id === situation)?.labelKey || 'sitGeneral')}</span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3 ml-1 text-gray-400">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-              </svg>
+              {theme === 'dark' ? '☀️' : '🌙'}
             </button>
-            
-            {isSituationMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 overflow-hidden z-50 transform origin-top-right transition-all">
-                <div className="p-1.5">
+          </div>
+
+          {/* Mobile More Menu */}
+          <div className="sm:hidden relative" ref={moreMenuRef}>
+            <button
+              onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
+              className="p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 rounded-full transition-colors text-xl"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>
+            </button>
+            {isMoreMenuOpen && (
+              <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 z-50 flex flex-col p-2 space-y-2 transform origin-top-right transition-all">
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400 dark:text-gray-500 px-3 pt-2 pb-1 uppercase font-bold tracking-wider">Situation</span>
                   {SITUATIONS.map(s => (
                     <button
                       key={s.id}
-                      onClick={() => { setSituation(s.id); setIsSituationMenuOpen(false); }}
-                      className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold flex items-center space-x-3 transition-colors ${
-                        situation === s.id 
-                          ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' 
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      onClick={() => { setSituation(s.id); setIsMoreMenuOpen(false); }}
+                      className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold flex items-center space-x-3 transition-colors ${
+                        situation === s.id ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
                       }`}
                     >
                       <span className="text-xl">{s.icon}</span>
@@ -727,34 +807,17 @@ export default function Home() {
                     </button>
                   ))}
                 </div>
-              </div>
-            )}
-          </div>
 
-          <div className="relative" ref={toneMenuRef}>
-            <button
-              onClick={() => setIsToneMenuOpen(!isToneMenuOpen)}
-              className="flex items-center space-x-1 px-3 py-1.5 mr-1 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-2xl transition-colors outline-none shadow-sm"
-              title="Conversation Tone"
-            >
-              <span className="text-base">{TONES.find(t => t.id === tone)?.icon}</span>
-              <span className="hidden sm:inline-block ml-1 whitespace-nowrap">{getStr(sourceLanguage, TONES.find(t => t.id === tone)?.labelKey || 'toneAuto')}</span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3 ml-1 text-gray-400">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-              </svg>
-            </button>
-            
-            {isToneMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 overflow-hidden z-50 transform origin-top-right transition-all">
-                <div className="p-1.5">
+                <div className="h-px bg-gray-100 dark:bg-gray-800 mx-2"></div>
+
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400 dark:text-gray-500 px-3 pt-2 pb-1 uppercase font-bold tracking-wider">Tone</span>
                   {TONES.map(t => (
                     <button
                       key={t.id}
-                      onClick={() => { setTone(t.id); setIsToneMenuOpen(false); }}
-                      className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold flex items-center space-x-3 transition-colors ${
-                        tone === t.id 
-                          ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' 
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      onClick={() => { setTone(t.id); setIsMoreMenuOpen(false); }}
+                      className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold flex items-center space-x-3 transition-colors ${
+                        tone === t.id ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
                       }`}
                     >
                       <span className="text-xl">{t.icon}</span>
@@ -762,17 +825,19 @@ export default function Home() {
                     </button>
                   ))}
                 </div>
+
+                <div className="h-px bg-gray-100 dark:bg-gray-800 mx-2"></div>
+
+                <button
+                  onClick={() => { setTheme(theme === 'dark' ? 'light' : 'dark'); setIsMoreMenuOpen(false); }}
+                  className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold flex items-center space-x-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <span className="text-xl">{theme === 'dark' ? '☀️' : '🌙'}</span>
+                  <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+                </button>
               </div>
             )}
           </div>
-
-          <button 
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 rounded-full transition-colors text-xl"
-            title="Toggle Theme"
-          >
-            {theme === 'dark' ? '☀️' : '🌙'}
-          </button>
 
           <button 
             onClick={() => setIsHistoryOpen(!isHistoryOpen)} 

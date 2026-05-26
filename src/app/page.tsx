@@ -226,45 +226,45 @@ export default function Home() {
     setLoadingMode('camera');
 
     try {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64String = reader.result as string;
+      const base64String = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
 
-        const payload = {
-          imageBase64: base64String,
-          sourceLanguage: targetLanguage, // taking picture of target language text
-          targetLanguage: sourceLanguage, // translating it to my language
-        };
-
-        const response = await fetch('/api/vision', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) throw new Error('Vision failed');
-        const data = await response.json();
-
-        setInteractions((prev) => [
-          ...prev,
-          {
-            id: Math.random().toString(36).substring(7),
-            sourceLang: targetLanguage,
-            targetLang: sourceLanguage,
-            originalText: data.originalText,
-            translation: data.translation,
-          },
-        ]);
-        
-        // Reset file input so same file can be selected again
-        e.target.value = '';
+      const payload = {
+        imageBase64: base64String,
+        sourceLanguage: targetLanguage, // taking picture of target language text
+        targetLanguage: sourceLanguage, // translating it to my language
       };
-      reader.readAsDataURL(file);
+
+      const response = await fetch('/api/vision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error('Vision failed');
+      const data = await response.json();
+
+      setInteractions((prev) => [
+        ...prev,
+        {
+          id: Math.random().toString(36).substring(7),
+          sourceLang: targetLanguage,
+          targetLang: sourceLanguage,
+          originalText: data.originalText,
+          translation: data.translation,
+        },
+      ]);
     } catch (error) {
       console.error(error);
       alert('Failed to process image.');
     } finally {
       setLoadingMode(false);
+      // Reset file input so same file can be selected again
+      e.target.value = '';
     }
   };
 

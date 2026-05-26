@@ -1,0 +1,17 @@
+{
+  "name": "Unlost in Translation",
+  "short_name": "Unlost",
+  "description": "A smart AI translation tool that sanity-checks intent and context to ensure nothing gets lost in translation.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

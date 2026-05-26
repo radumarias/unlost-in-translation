@@ -111,7 +111,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     cameraTranslation: 'Traducere cu camera',
     processingImage: 'Se procesează imaginea...'},
   'French': {
-    idiomExplanation: 'Explication de l\\'Idiome',
+    idiomExplanation: "Explication de l'Idiome",
     noHistory: 'Aucun historique.', closeHistory: "Fermer l'historique", you: 'Vous', translatingTo: 'Traduction vers', typeHere: 'Tapez ici...', checkingIntent: "Vérification de l'intention...", checkIntent: "Vérifier l'intention & Traduire", translating: 'Traduction...', directTranslate: 'Traduction Directe', sanityCheck: 'Vérification de Sens', warning: 'Avertissement Culturel', discard: 'Ignorer', approve: 'Approuver & Passer', replyIn: 'Répondre en', roundTrip: 'Rétro-traduction', generatingRoundTrip: 'Génération de la rétro-traduction...', suggestedFix: 'Correction Suggérée', useThisVersion: 'Utiliser cette version', otherWaysToRewrite: 'Autres façons de réécrire :', generatingSuggestions: 'Génération de suggestions...',
     toneAuto: 'Ton Auto',
     toneCasual: 'Décontracté',

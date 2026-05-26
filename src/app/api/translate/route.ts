@@ -56,6 +56,7 @@ ${tone !== 'Auto' ? `IMPORTANT: The requested conversation tone is "${tone}". Th
 ${situation !== 'General' ? `IMPORTANT: The requested situation/context is "${situation}". STRICTLY prioritize vocabulary and politeness suited for this situation (e.g. absolute precision for Medical, rapid concise translation for Emergency).` : ''}
 3. Provide a 'sanity check': a roundtrip back-translation explaining exactly how the ${targetLanguage} speaker will perceive the translation, written in the detected source language.
 4. If the message contains an idiom, slang, or concept that translates literally into something offensive or highly unnatural, provide a warning. Otherwise, warning should be null.
+5. If the message contains an idiom or slang that doesn't translate literally, provide an idiom explanation and suggest the local equivalent in the target language. Otherwise, idiom_explanation should be null.
 The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai.`
       : `You are a highly skilled cultural interpreter. Your goal is to prevent 'lost in translation' moments.
 You are facilitating a conversation between two people. One speaks ${sourceLanguage} and the other speaks ${targetLanguage}.
@@ -70,7 +71,8 @@ Your task is to:
 ${tone !== 'Auto' ? `IMPORTANT: The requested conversation tone is "${tone}". The translation MUST reflect this tone accurately.` : ''}
 ${situation !== 'General' ? `IMPORTANT: The requested situation/context is "${situation}". STRICTLY prioritize vocabulary and politeness suited for this situation (e.g. absolute precision for Medical, rapid concise translation for Emergency).` : ''}
 2. Provide a 'sanity check': a roundtrip back-translation explaining exactly how the ${targetLanguage} speaker will perceive the translation, written in ${sourceLanguage}.
-3. If the message contains an idiom, slang, or concept that translates literally into something offensive or highly unnatural, provide a warning. Otherwise, warning should be null.`;
+3. If the message contains an idiom, slang, or concept that translates literally into something offensive or highly unnatural, provide a warning. Otherwise, warning should be null.
+4. If the message contains an idiom or slang that doesn't translate literally, provide an idiom explanation and suggest the local equivalent in the target language. Otherwise, idiom_explanation should be null.`;
 
     const schema = isSourceAutoDetect
       ? z.object({
@@ -78,11 +80,13 @@ ${situation !== 'General' ? `IMPORTANT: The requested situation/context is "${si
           translation: z.string().describe(`The ${targetLanguage} translation of the last message.`),
           sanity_check: z.string().describe(`The back-translation (roundtrip) of the ${targetLanguage} text, explaining the true perceived intent in the detected source language.`),
           warning: z.string().nullable().describe('Warning about cultural misunderstanding or offensive literal translation. Null if safe.'),
+          idiom_explanation: z.string().nullable().describe('If the message is an idiom or slang, explain why it makes no sense translated literally and suggest the local equivalent in the target language. Null otherwise.')
         })
       : z.object({
           translation: z.string().describe(`The ${targetLanguage} translation of the last message.`),
           sanity_check: z.string().describe(`The ${sourceLanguage} back-translation (roundtrip) of the ${targetLanguage} text, explaining the true perceived intent.`),
           warning: z.string().nullable().describe('Warning about cultural misunderstanding or offensive literal translation. Null if safe.'),
+          idiom_explanation: z.string().nullable().describe('If the message is an idiom or slang, explain why it makes no sense translated literally and suggest the local equivalent in the target language. Null otherwise.')
         });
 
     const result = await generateObject({

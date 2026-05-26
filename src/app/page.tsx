@@ -23,6 +23,7 @@ type DraftTranslation = {
   rewriteDirection?: string | null;
   rewrittenSource?: string | null;
   alternativeDirections?: string[] | null;
+  idiom_explanation?: string | null;
 };
 
 const LANGUAGES = [
@@ -419,7 +420,7 @@ export default function Home() {
             ? data.detectedSourceLanguage 
             : sourceLanguage;
 
-          setDraft(prev => prev ? { ...prev, sanity_check: data.sanity_check, warning: data.warning, sourceLang: detectedSource } : null);
+          setDraft(prev => prev ? { ...prev, sanity_check: data.sanity_check, warning: data.warning, idiom_explanation: data.idiom_explanation, sourceLang: detectedSource } : null);
 
           if (data.warning) {
             fetchInitialRewrite(payload.currentInput, data.warning);
@@ -914,6 +915,13 @@ export default function Home() {
                   <div className="mt-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50 text-amber-900 dark:text-amber-200 rounded-2xl p-4 text-sm font-medium">
                     <strong className="text-amber-800 dark:text-amber-400">⚠️ {getStr(sourceLanguage, 'warning')}</strong>
                     <p className="mt-1 opacity-90">{draft.warning}</p>
+
+                    {draft.idiom_explanation && (
+                      <div className="mt-3 pt-3 border-t border-amber-200/50 dark:border-amber-700/30">
+                        <strong className="text-amber-800 dark:text-amber-400">💡 Idiom Explanation</strong>
+                        <p className="mt-1 opacity-90">{draft.idiom_explanation}</p>
+                      </div>
+                    )}
 
                     {isFetchingInitialRewrite && (
                       <div className="mt-4 p-4 bg-white/60 dark:bg-gray-800/60 rounded-xl border border-amber-100 dark:border-amber-800 flex items-center">

@@ -116,6 +116,7 @@ export default function Home() {
   const [draft, setDraft] = useState<DraftTranslation | null>(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [tone, setTone] = useState('Auto');
+  const [situation, setSituation] = useState('General');
   const [fetchingAlternativeDir, setFetchingAlternativeDir] = useState<string | null>(null);
   const [isFetchingInitialRewrite, setIsFetchingInitialRewrite] = useState(false);
   const [isToneMenuOpen, setIsToneMenuOpen] = useState(false);

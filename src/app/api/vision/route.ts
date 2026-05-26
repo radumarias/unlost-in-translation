@@ -11,26 +11,37 @@ const google = createGoogleGenerativeAI({
 
 export async function POST(req: Request) {
   try {
-    const { imageBase64, userLanguage, otherLanguage, isAutoDetect } = await req.json();
+    const { imageBase64, userLanguage, otherLanguage, isAutoDetect, isSourceAutoDetect } = await req.json();
 
     if (!imageBase64 || !userLanguage || !otherLanguage) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const systemPrompt = isAutoDetect 
-      ? `You are a helpful translation assistant.
+    let systemPrompt = '';
+    
+    if (isAutoDetect) {
+      systemPrompt = `You are a helpful translation assistant.
 You must analyze the image, detect the language of any prominent text, and transcribe it.
 Translate the text to ${userLanguage}. The detected language can be any language.
 
 CRITICAL: You must provide a brief explanation if the image is a specific food, sign, or cultural item. The translation AND this explanation MUST be written entirely in ${userLanguage}.
-The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai.`
-      : `You are a helpful translation assistant in a conversation between a ${userLanguage} speaker and a ${otherLanguage} speaker.
+The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai.`;
+    } else if (isSourceAutoDetect) {
+      systemPrompt = `You are a helpful translation assistant.
+You must analyze the image, detect the language of any prominent text, and transcribe it.
+Translate the text to ${otherLanguage}. The detected language can be any language.
+
+CRITICAL: You must provide a brief explanation if the image is a specific food, sign, or cultural item. The translation AND this explanation MUST be written entirely in ${otherLanguage}.
+The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai.`;
+    } else {
+      systemPrompt = `You are a helpful translation assistant in a conversation between a ${userLanguage} speaker and a ${otherLanguage} speaker.
 You must analyze the image, detect the language of any prominent text, and transcribe it.
 - If the text in the image is in ${userLanguage}, translate it to ${otherLanguage}.
 - If the text is in ${otherLanguage} or any other language, translate it to ${userLanguage}.
 
 CRITICAL: You must provide a brief explanation if the image is a specific food, sign, or cultural item. The translation AND this explanation MUST be written entirely in the target language you are translating to.
 The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai.`;
+    }
 
     // Remove the data URI prefix (e.g., data:image/jpeg;base64,) if present
     const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');

@@ -119,6 +119,7 @@ export default function Home() {
   const [targetLanguage, setTargetLanguage] = useState('Thai');
   const [draft, setDraft] = useState<DraftTranslation | null>(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [tone, setTone] = useState('Auto');
   const [situation, setSituation] = useState('General');
   const [fullScreenText, setFullScreenText] = useState<string | null>(null);
@@ -547,6 +548,37 @@ export default function Home() {
       style={{ height: viewportHeight }}
     >
       
+      {/* HELP DRAWER (Z-20) */}
+      <div 
+        className={`absolute top-0 left-0 w-full bg-gray-50 dark:bg-gray-900 shadow-inner dark:shadow-gray-950/50 transition-transform duration-300 ease-in-out z-20 flex flex-col ${
+          isHelpOpen ? 'translate-y-0 h-full pt-[76px]' : '-translate-y-full h-full pt-[76px]'
+        }`}
+      >
+        <div className="flex-1 overflow-y-auto px-6 pb-6 pt-6 text-gray-800 dark:text-gray-200 space-y-6">
+          <h2 className="text-2xl font-bold mb-4">How to use Unlost in Translation</h2>
+          
+          <section>
+            <h3 className="text-xl font-bold mb-2 flex items-center space-x-2"><span>🎤</span> <span>Voice & Text Translation</span></h3>
+            <p className="opacity-90 leading-relaxed">Speak or type naturally. We auto-detect your language and provide a precise translation along with a <strong>Sanity Check</strong> back-translation so you know exactly what the other person is hearing.</p>
+          </section>
+
+          <section>
+            <h3 className="text-xl font-bold mb-2 flex items-center space-x-2"><span>⚠️</span> <span>Cultural Warnings & Idioms</span></h3>
+            <p className="opacity-90 leading-relaxed">If your phrase contains an idiom or could be culturally offensive when translated directly, we'll explain the cultural nuance and provide the closest native equivalent.</p>
+          </section>
+          
+          <section>
+            <h3 className="text-xl font-bold mb-2 flex items-center space-x-2"><span>✨</span> <span>Tones & Situations</span></h3>
+            <p className="opacity-90 leading-relaxed">Use the dropdown menus to adapt your message for a specific tone (e.g. Formal, Casual, Empathetic) or situation (e.g. Dating, Medical, Emergency) to ensure you strike the right chord.</p>
+          </section>
+          
+          <section>
+            <h3 className="text-xl font-bold mb-2 flex items-center space-x-2"><span>📸</span> <span>Camera Translation</span></h3>
+            <p className="opacity-90 leading-relaxed">Tap the camera icon to snap a picture of a sign, menu, or document and instantly get the meaning and translation.</p>
+          </section>
+        </div>
+      </div>
+
       {/* HISTORY DRAWER (Z-10) */}
       <div 
         className={`absolute top-0 left-0 w-full bg-gray-50 dark:bg-gray-900 shadow-inner dark:shadow-gray-950/50 transition-transform duration-300 ease-in-out z-10 flex flex-col ${
@@ -840,7 +872,16 @@ export default function Home() {
           </div>
 
           <button 
-            onClick={() => setIsHistoryOpen(!isHistoryOpen)} 
+            onClick={() => { setIsHelpOpen(!isHelpOpen); setIsHistoryOpen(false); }} 
+            className={`p-2 rounded-full transition-colors ${isHelpOpen ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'}`}
+            title="Help"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+            </svg>
+          </button>
+          <button 
+            onClick={() => { setIsHistoryOpen(!isHistoryOpen); setIsHelpOpen(false); }} 
             className={`p-2 rounded-full transition-colors ${isHistoryOpen ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'}`}
             title="History"
           >

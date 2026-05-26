@@ -532,7 +532,7 @@ export default function Home() {
                         <p className="text-xl leading-snug">{displayText}</p>
                       </div>
                       <button 
-                        onClick={() => setFullScreenText(isRight ? interaction.translation : interaction.originalText)} 
+                        onClick={() => setFullScreenText(interaction.translation)} 
                         className={`shrink-0 opacity-0 group-hover:opacity-100 transition-opacity ${isRight ? 'text-blue-200 hover:text-white' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                         title="Expand"
                       >

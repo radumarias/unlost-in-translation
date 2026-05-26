@@ -21,7 +21,8 @@ export async function POST(req: Request) {
 You must analyze the image, detect the language of any prominent text, and transcribe it.
 - If the text in the image is in ${userLanguage}, translate it to ${otherLanguage}.
 - If the text is in ${otherLanguage} or any other language, translate it to ${userLanguage}.
-Pay attention to cultural nuances and provide a brief explanation if it is a specific food, sign, or cultural item.
+
+CRITICAL: You must provide a brief explanation if the image is a specific food, sign, or cultural item. The translation AND this explanation MUST be written entirely in the target language you are translating to.
 The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai.`;
 
     // Remove the data URI prefix (e.g., data:image/jpeg;base64,) if present

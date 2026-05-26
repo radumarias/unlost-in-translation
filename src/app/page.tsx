@@ -741,21 +741,23 @@ export default function Home() {
           <div className="flex-1 flex flex-col relative h-full">
             <div className="flex-1 overflow-y-auto px-6 pt-6 pb-28">
             
-            {/* CURRENT DRAFT BUBBLE */}
-            <div className="flex flex-col items-end w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <div className="max-w-[85%] sm:max-w-[70%] bg-blue-600 text-white rounded-3xl rounded-br-none p-5 shadow-md">
-                <p className="text-xl leading-snug mb-3">{draft.originalText}</p>
-                <div className="bg-white/10 rounded-2xl p-4 mt-2 relative">
-                  <div className="flex justify-between items-start mb-1">
-                    <p className="text-xs text-blue-200 uppercase tracking-wider font-bold">{getDestLangName(draft.targetLang)}</p>
-                    <button onClick={() => setFullScreenText(draft.translation)} className="text-white/70 hover:text-white transition-colors" title="Expand Translation">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>
-                    </button>
-                  </div>
-                  <p className="text-lg font-medium">{draft.translation}</p>
-                </div>
+              {/* CURRENT DRAFT TEXT */}
+              <div className="mb-6">
+                <p className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">{LANGUAGE_DISPLAY_NAMES[draft.sourceLang]}</p>
+                <p className="text-xl sm:text-2xl text-gray-700 dark:text-gray-300">{draft.originalText}</p>
               </div>
-            </div>
+              
+              <div className="mb-8 border-l-4 border-blue-500 pl-4 py-1 relative group">
+                <div className="flex justify-between items-start mb-2">
+                  <p className="text-sm font-bold text-blue-500 dark:text-blue-400 uppercase tracking-widest">{LANGUAGE_DISPLAY_NAMES[draft.targetLang]}</p>
+                  <button onClick={() => setFullScreenText(draft.translation)} className="text-blue-400 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-300 transition-colors opacity-0 group-hover:opacity-100" title="Expand Translation">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>
+                  </button>
+                </div>
+                <p className={`text-3xl sm:text-5xl text-blue-900 dark:text-blue-300 font-medium leading-tight ${draft.translation === getStr(sourceLanguage, 'translating') ? 'animate-pulse opacity-70' : ''}`}>
+                  {draft.translation}
+                </p>
+              </div>
 
               <div className="mb-8 border-l-4 border-emerald-500 pl-4 py-1 bg-emerald-50/50 dark:bg-emerald-900/10 rounded-r-3xl pr-4">
                 <div className="flex items-center space-x-2 mb-2">

@@ -110,7 +110,7 @@ export default function Home() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [interactions, setInteractions] = useState<Interaction[]>([]);
   const [input, setInput] = useState('');
-  const [loadingMode, setLoadingMode] = useState<'intent' | 'direct' | false>(false);
+  const [loadingMode, setLoadingMode] = useState<'intent' | 'direct' | 'camera' | false>(false);
   const [sourceLanguage, setSourceLanguage] = useState('English');
   const [targetLanguage, setTargetLanguage] = useState('Thai');
   const [draft, setDraft] = useState<DraftTranslation | null>(null);
@@ -217,6 +217,55 @@ export default function Home() {
       }
     } catch(e) {}
     return LANGUAGE_DISPLAY_NAMES[lang];
+  };
+
+  const handleCameraCapture = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setLoadingMode('camera');
+
+    try {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64String = reader.result as string;
+
+        const payload = {
+          imageBase64: base64String,
+          sourceLanguage: targetLanguage, // taking picture of target language text
+          targetLanguage: sourceLanguage, // translating it to my language
+        };
+
+        const response = await fetch('/api/vision', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) throw new Error('Vision failed');
+        const data = await response.json();
+
+        setInteractions((prev) => [
+          ...prev,
+          {
+            id: Math.random().toString(36).substring(7),
+            sourceLang: targetLanguage,
+            targetLang: sourceLanguage,
+            originalText: data.originalText,
+            translation: data.translation,
+          },
+        ]);
+        
+        // Reset file input so same file can be selected again
+        e.target.value = '';
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to process image.');
+    } finally {
+      setLoadingMode(false);
+    }
   };
 
   const handleSubmit = async (skipChecks: boolean, overrideInput?: string) => {
@@ -696,6 +745,23 @@ export default function Home() {
             </div>
             
             <div className="shrink-0 pt-3 pb-1 flex gap-2 sm:gap-3">
+              <input type="file" id="camera-input" accept="image/*" capture="environment" className="hidden" onChange={handleCameraCapture} />
+              <button 
+                onClick={() => document.getElementById('camera-input')?.click()}
+                disabled={loadingMode !== false}
+                className="w-16 sm:w-20 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-2xl flex justify-center items-center active:bg-gray-200 dark:active:bg-gray-700 transition-colors disabled:opacity-50 shadow-sm"
+                title={getStr(sourceLanguage, 'cameraTranslation')}
+              >
+                {loadingMode === 'camera' ? (
+                  <svg className="animate-spin h-6 w-6 text-gray-700 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-7 h-7 sm:w-8 sm:h-8">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                  </svg>
+                )}
+              </button>
+              
               <button 
                 onClick={() => handleSubmit(false)}
                 disabled={loadingMode !== false || !input.trim()}

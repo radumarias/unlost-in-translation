@@ -605,8 +605,13 @@ export default function Home() {
 
       {/* HEADER (Z-20) */}
       <header className={`relative z-20 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-3 pt-1.5 pb-2 flex flex-col shrink-0 shadow-sm dark:shadow-gray-950/50 transition-all duration-300 ${isKeyboardOpen && !draft ? 'hidden' : 'block'}`}>
-        <div className="text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 dark:text-gray-500 text-center pb-1 w-full opacity-80">
-          Unlost in Translation
+        <div className="text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 dark:text-gray-500 text-center pb-1 w-full opacity-80 flex flex-col items-center">
+          <span>Unlost in Translation</span>
+          {process.env.NEXT_PUBLIC_APP_VERSION && (
+            <span className="text-[8px] sm:text-[9px] font-normal tracking-normal text-gray-400/60 dark:text-gray-500/60 mt-0.5 lowercase">
+              {process.env.NEXT_PUBLIC_APP_VERSION}
+            </span>
+          )}
         </div>
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center space-x-0 sm:space-x-1 flex-[2] relative">

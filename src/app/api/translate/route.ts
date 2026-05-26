@@ -85,14 +85,14 @@ ${situation !== 'General' ? `IMPORTANT: The requested situation/context is "${si
           detectedSourceLanguage: z.string().describe(`The detected language of the input message. Must be one of: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai.`),
           translation: z.string().describe(`The ${targetLanguage} translation of the last message.`),
           sanity_check: z.string().describe(`The back-translation (roundtrip) of the ${targetLanguage} text, explaining the true perceived intent in the detected source language.`),
-          warning: z.string().nullable().describe('Warning about cultural misunderstanding or offensive translation. Null if safe.'),
-          idiom_explanation: z.string().nullable().describe('If the original message contains an idiom, slang, or cultural concept, explain it and provide the native equivalent in the target language. Null otherwise.')
+          warning: z.string().nullable().optional().describe('Warning about cultural misunderstanding or offensive translation. Null if safe.'),
+          idiom_explanation: z.string().nullable().optional().describe('If the original message contains an idiom, slang, or cultural concept, explain it and provide the native equivalent in the target language. Null otherwise.')
         })
       : z.object({
           translation: z.string().describe(`The ${targetLanguage} translation of the last message.`),
           sanity_check: z.string().describe(`The ${sourceLanguage} back-translation (roundtrip) of the ${targetLanguage} text, explaining the true perceived intent.`),
-          warning: z.string().nullable().describe('Warning about cultural misunderstanding or offensive translation. Null if safe.'),
-          idiom_explanation: z.string().nullable().describe('If the original message contains an idiom, slang, or cultural concept, explain it and provide the native equivalent in the target language. Null otherwise.')
+          warning: z.string().nullable().optional().describe('Warning about cultural misunderstanding or offensive translation. Null if safe.'),
+          idiom_explanation: z.string().nullable().optional().describe('If the original message contains an idiom, slang, or cultural concept, explain it and provide the native equivalent in the target language. Null otherwise.')
         });
 
     const result = await generateObject({

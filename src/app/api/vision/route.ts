@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { generateObject } from 'ai';
-import { google } from '@ai-sdk/google';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
 
 export const maxDuration = 60;
+
+const google = createGoogleGenerativeAI({
+  apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+});
 
 export async function POST(req: Request) {
   try {
@@ -25,15 +29,12 @@ Keep the explanation concise and helpful.`;
 
     const { object } = await generateObject({
       model: google('gemini-2.5-flash'),
+      system: systemPrompt,
       schema: z.object({
         originalText: z.string().describe(`A summary or transcription of the text found in the image in ${sourceLanguage}. Keep it short.`),
         translation: z.string().describe(`The translation and brief explanation in ${targetLanguage}.`),
       }),
       messages: [
-        {
-          role: 'system',
-          content: systemPrompt,
-        },
         {
           role: 'user',
           content: [

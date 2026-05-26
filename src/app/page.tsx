@@ -574,7 +574,7 @@ export default function Home() {
               title="Conversation Context"
             >
               <span className="text-base">{SITUATIONS.find(s => s.id === situation)?.icon}</span>
-              <span className="hidden sm:inline-block ml-1">{getStr(sourceLanguage, SITUATIONS.find(s => s.id === situation)?.labelKey || 'sitGeneral')}</span>
+              <span className="hidden sm:inline-block ml-1 whitespace-nowrap">{getStr(sourceLanguage, SITUATIONS.find(s => s.id === situation)?.labelKey || 'sitGeneral')}</span>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3 ml-1 text-gray-400">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
               </svg>
@@ -609,7 +609,7 @@ export default function Home() {
               title="Conversation Tone"
             >
               <span className="text-base">{TONES.find(t => t.id === tone)?.icon}</span>
-              <span className="hidden sm:inline-block ml-1">{getStr(sourceLanguage, TONES.find(t => t.id === tone)?.labelKey || 'toneAuto')}</span>
+              <span className="hidden sm:inline-block ml-1 whitespace-nowrap">{getStr(sourceLanguage, TONES.find(t => t.id === tone)?.labelKey || 'toneAuto')}</span>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3 ml-1 text-gray-400">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
               </svg>

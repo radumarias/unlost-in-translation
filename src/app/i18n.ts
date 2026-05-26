@@ -27,10 +27,10 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tonePlayful: 'Playful',
     toneEmpathetic: 'Empathetic',
     toneDirect: 'Direct',
-    sitGeneral: 'General Context',
-    sitMedical: 'Medical / Hospital',
-    sitDating: 'Dating / Social',
-    sitService: 'Service / Restaurant',
+    sitGeneral: 'General',
+    sitMedical: 'Medical',
+    sitDating: 'Dating',
+    sitService: 'Service',
     sitEmergency: 'Emergency'
   },
   'Spanish': {
@@ -61,10 +61,10 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tonePlayful: 'Juguetón',
     toneEmpathetic: 'Empático',
     toneDirect: 'Directo',
-    sitGeneral: 'Contexto General',
-    sitMedical: 'Médico / Hospital',
-    sitDating: 'Citas / Social',
-    sitService: 'Servicio / Restaurante',
+    sitGeneral: 'General',
+    sitMedical: 'Médico',
+    sitDating: 'Citas',
+    sitService: 'Servicio',
     sitEmergency: 'Emergencia'
   },
   'Romanian': {
@@ -95,10 +95,10 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tonePlayful: 'Jucăuș',
     toneEmpathetic: 'Empatic',
     toneDirect: 'Direct',
-    sitGeneral: 'Context General',
-    sitMedical: 'Medical / Spital',
-    sitDating: 'Întâlniri / Social',
-    sitService: 'Servicii / Restaurant',
+    sitGeneral: 'General',
+    sitMedical: 'Medical',
+    sitDating: 'Întâlniri',
+    sitService: 'Servicii',
     sitEmergency: 'Urgență'
   },
   'French': {
@@ -110,10 +110,10 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tonePlayful: 'Enjoué',
     toneEmpathetic: 'Empathique',
     toneDirect: 'Direct',
-    sitGeneral: 'Contexte Général',
-    sitMedical: 'Médical / Hôpital',
-    sitDating: 'Rencontres / Social',
-    sitService: 'Service / Restaurant',
+    sitGeneral: 'Général',
+    sitMedical: 'Médical',
+    sitDating: 'Rencontres',
+    sitService: 'Service',
     sitEmergency: 'Urgence'
   },
   'German': {
@@ -125,10 +125,10 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tonePlayful: 'Verspielt',
     toneEmpathetic: 'Empathisch',
     toneDirect: 'Direkt',
-    sitGeneral: 'Allgemeiner Kontext',
-    sitMedical: 'Medizinisch / Krankenhaus',
-    sitDating: 'Dating / Sozial',
-    sitService: 'Service / Restaurant',
+    sitGeneral: 'Allgemein',
+    sitMedical: 'Medizinisch',
+    sitDating: 'Dating',
+    sitService: 'Service',
     sitEmergency: 'Notfall'
   },
   'Italian': {
@@ -140,10 +140,10 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tonePlayful: 'Giocoso',
     toneEmpathetic: 'Empatico',
     toneDirect: 'Diretto',
-    sitGeneral: 'Contesto Generale',
-    sitMedical: 'Medico / Ospedale',
-    sitDating: 'Appuntamenti / Sociale',
-    sitService: 'Servizio / Ristorante',
+    sitGeneral: 'Generale',
+    sitMedical: 'Medico',
+    sitDating: 'Appuntamenti',
+    sitService: 'Servizio',
     sitEmergency: 'Emergenza'
   },
   'Portuguese': {
@@ -155,10 +155,10 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tonePlayful: 'Brincalhão',
     toneEmpathetic: 'Empático',
     toneDirect: 'Direto',
-    sitGeneral: 'Contexto Geral',
-    sitMedical: 'Médico / Hospital',
-    sitDating: 'Encontros / Social',
-    sitService: 'Serviço / Restaurante',
+    sitGeneral: 'Geral',
+    sitMedical: 'Médico',
+    sitDating: 'Encontros',
+    sitService: 'Serviço',
     sitEmergency: 'Emergência'
   },
   'Japanese': {
@@ -170,10 +170,10 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tonePlayful: '遊び心',
     toneEmpathetic: '共感的',
     toneDirect: '直接的',
-    sitGeneral: '一般的な文脈',
-    sitMedical: '医療 / 病院',
-    sitDating: 'デート / 社交',
-    sitService: 'サービス / レストラン',
+    sitGeneral: '一般',
+    sitMedical: '医療',
+    sitDating: 'デート',
+    sitService: 'サービス',
     sitEmergency: '緊急'
   },
   'Chinese (Mandarin)': {
@@ -185,10 +185,10 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tonePlayful: '调皮',
     toneEmpathetic: '同情',
     toneDirect: '直接',
-    sitGeneral: '一般语境',
-    sitMedical: '医疗/医院',
-    sitDating: '约会/社交',
-    sitService: '服务/餐厅',
+    sitGeneral: '一般',
+    sitMedical: '医疗',
+    sitDating: '约会',
+    sitService: '服务',
     sitEmergency: '紧急'
   },
   'Korean': {
@@ -200,10 +200,10 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tonePlayful: '장난스러운',
     toneEmpathetic: '공감하는',
     toneDirect: '직접적인',
-    sitGeneral: '일반적인 상황',
-    sitMedical: '의료 / 병원',
-    sitDating: '데이트 / 소셜',
-    sitService: '서비스 / 레스토랑',
+    sitGeneral: '일반',
+    sitMedical: '의료',
+    sitDating: '데이트',
+    sitService: '서비스',
     sitEmergency: '비상'
   },
   'Russian': {
@@ -215,10 +215,10 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tonePlayful: 'Игривый',
     toneEmpathetic: 'Чуткий',
     toneDirect: 'Прямой',
-    sitGeneral: 'Общий Контекст',
-    sitMedical: 'Медицина / Больница',
-    sitDating: 'Свидания / Общение',
-    sitService: 'Сервис / Ресторан',
+    sitGeneral: 'Общий',
+    sitMedical: 'Медицина',
+    sitDating: 'Свидания',
+    sitService: 'Сервис',
     sitEmergency: 'Чрезвычайная Ситуация'
   },
   'Arabic': {
@@ -230,10 +230,10 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tonePlayful: 'مرح',
     toneEmpathetic: 'متعاطف',
     toneDirect: 'مباشر',
-    sitGeneral: 'سياق عام',
-    sitMedical: 'طبي / مستشفى',
-    sitDating: 'مواعدة / اجتماعي',
-    sitService: 'خدمة / مطعم',
+    sitGeneral: 'عام',
+    sitMedical: 'طبي',
+    sitDating: 'مواعدة',
+    sitService: 'خدمة',
     sitEmergency: 'طوارئ'
   },
   'Thai': {
@@ -245,10 +245,10 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     tonePlayful: 'ขี้เล่น',
     toneEmpathetic: 'เห็นอกเห็นใจ',
     toneDirect: 'ตรงไปตรงมา',
-    sitGeneral: 'บริบททั่วไป',
-    sitMedical: 'การแพทย์ / โรงพยาบาล',
-    sitDating: 'การออกเดท / สังคม',
-    sitService: 'บริการ / ร้านอาหาร',
+    sitGeneral: 'ทั่วไป',
+    sitMedical: 'การแพทย์',
+    sitDating: 'การออกเดท',
+    sitService: 'บริการ',
     sitEmergency: 'ฉุกเฉิน'
   }
 };

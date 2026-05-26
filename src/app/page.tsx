@@ -18,6 +18,10 @@ type DraftTranslation = {
   warning: string | null;
   sourceLang: string;
   targetLang: string;
+  roundTrip: string | null;
+  rewriteDirection?: string | null;
+  rewrittenSource?: string | null;
+  alternativeDirections?: string[] | null;
 };
 
 const LANGUAGES = [
@@ -52,6 +56,22 @@ const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
   'Thai': 'ไทย'
 };
 
+const LANGUAGE_FLAGS: Record<string, string> = {
+  'English': '🇬🇧',
+  'Spanish': '🇪🇸',
+  'French': '🇫🇷',
+  'German': '🇩🇪',
+  'Japanese': '🇯🇵',
+  'Italian': '🇮🇹',
+  'Portuguese': '🇵🇹',
+  'Chinese (Mandarin)': '🇨🇳',
+  'Korean': '🇰🇷',
+  'Russian': '🇷🇺',
+  'Arabic': '🇸🇦',
+  'Romanian': '🇷🇴',
+  'Thai': '🇹🇭'
+};
+
 const LANG_CODES: Record<string, string> = {
   'English': 'en',
   'Spanish': 'es',
@@ -68,6 +88,24 @@ const LANG_CODES: Record<string, string> = {
   'Thai': 'th'
 };
 
+const TONES = [
+  { id: 'Auto', icon: '✨', labelKey: 'toneAuto' },
+  { id: 'Casual', icon: '😊', labelKey: 'toneCasual' },
+  { id: 'Formal', icon: '👔', labelKey: 'toneFormal' },
+  { id: 'Business', icon: '💼', labelKey: 'toneBusiness' },
+  { id: 'Playful', icon: '🥳', labelKey: 'tonePlayful' },
+  { id: 'Empathetic', icon: '❤️', labelKey: 'toneEmpathetic' },
+  { id: 'Direct', icon: '🎯', labelKey: 'toneDirect' },
+];
+
+const SITUATIONS = [
+  { id: 'General', icon: '🌍', labelKey: 'sitGeneral' },
+  { id: 'Medical', icon: '🏥', labelKey: 'sitMedical' },
+  { id: 'Dating', icon: '❤️', labelKey: 'sitDating' },
+  { id: 'Service', icon: '🍽️', labelKey: 'sitService' },
+  { id: 'Emergency', icon: '🚨', labelKey: 'sitEmergency' },
+];
+
 export default function Home() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [interactions, setInteractions] = useState<Interaction[]>([]);
@@ -77,6 +115,14 @@ export default function Home() {
   const [targetLanguage, setTargetLanguage] = useState('Thai');
   const [draft, setDraft] = useState<DraftTranslation | null>(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [tone, setTone] = useState('Auto');
+  const [situation, setSituation] = useState('General');
+  const [fetchingAlternativeDir, setFetchingAlternativeDir] = useState<string | null>(null);
+  const [isFetchingInitialRewrite, setIsFetchingInitialRewrite] = useState(false);
+  const [isToneMenuOpen, setIsToneMenuOpen] = useState(false);
+  const [isSituationMenuOpen, setIsSituationMenuOpen] = useState(false);
+  const [isSourceMenuOpen, setIsSourceMenuOpen] = useState(false);
+  const [isTargetMenuOpen, setIsTargetMenuOpen] = useState(false);
   
   // Viewport height for mobile keyboard handling
   const [viewportHeight, setViewportHeight] = useState('100dvh');
@@ -84,6 +130,29 @@ export default function Home() {
 
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const toneMenuRef = useRef<HTMLDivElement>(null);
+  const situationMenuRef = useRef<HTMLDivElement>(null);
+  const sourceMenuRef = useRef<HTMLDivElement>(null);
+  const targetMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (toneMenuRef.current && !toneMenuRef.current.contains(event.target as Node)) {
+        setIsToneMenuOpen(false);
+      }
+      if (situationMenuRef.current && !situationMenuRef.current.contains(event.target as Node)) {
+        setIsSituationMenuOpen(false);
+      }
+      if (sourceMenuRef.current && !sourceMenuRef.current.contains(event.target as Node)) {
+        setIsSourceMenuOpen(false);
+      }
+      if (targetMenuRef.current && !targetMenuRef.current.contains(event.target as Node)) {
+        setIsTargetMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Handle mobile keyboard viewport sizing
   useEffect(() => {
@@ -150,16 +219,19 @@ export default function Home() {
     return LANGUAGE_DISPLAY_NAMES[lang];
   };
 
-  const handleSubmit = async (skipChecks: boolean) => {
-    if (!input.trim() || loadingMode !== false || draft) return;
+  const handleSubmit = async (skipChecks: boolean, overrideInput?: string) => {
+    const textToSubmit = overrideInput || input;
+    if (!textToSubmit.trim() || loadingMode !== false || (draft && !overrideInput)) return;
     setLoadingMode(skipChecks ? 'direct' : 'intent');
 
     try {
-      const payload = { 
+      const payload = {
         history: interactions.map(i => ({ speakerLang: i.sourceLang, text: i.originalText })),
         sourceLanguage,
         targetLanguage,
-        currentInput: input
+        tone,
+        situation,
+        currentInput: textToSubmit
       };
 
       if (skipChecks) {
@@ -177,7 +249,7 @@ export default function Home() {
              id: Math.random().toString(36).substring(7),
              sourceLang: sourceLanguage,
              targetLang: targetLanguage,
-             originalText: input,
+             originalText: textToSubmit,
              translation: data.translation
            }
          ]);
@@ -192,12 +264,13 @@ export default function Home() {
       } else {
         // Progressive UI - Parallel Fetching
         setDraft({
-          originalText: input,
+          originalText: textToSubmit,
           translation: getStr(sourceLanguage, 'translating'),
           sanity_check: getStr(sourceLanguage, 'checkingIntent'),
           warning: null,
           sourceLang: sourceLanguage,
-          targetLang: targetLanguage
+          targetLang: targetLanguage,
+          roundTrip: getStr(sourceLanguage, 'generatingRoundTrip')
         });
         setInput('');
 
@@ -205,8 +278,29 @@ export default function Home() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...payload, skipChecks: true }),
-        }).then(res => res.json()).then(data => {
+        }).then(res => res.json()).then(async data => {
           setDraft(prev => prev ? { ...prev, translation: data.translation } : null);
+          
+          // Initiate Round Trip Translation (B -> A)
+          try {
+            const rtPayload = {
+              history: [], // No history for literal round-trip
+              sourceLanguage: targetLanguage,
+              targetLanguage: sourceLanguage,
+              tone: 'Auto',
+              situation,
+              currentInput: data.translation
+            };
+            const rtRes = await fetch('/api/translate', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ ...rtPayload, skipChecks: true }),
+            });
+            const rtData = await rtRes.json();
+            setDraft(prev => prev ? { ...prev, roundTrip: rtData.translation } : null);
+          } catch (e) {
+            setDraft(prev => prev ? { ...prev, roundTrip: "Failed to generate back-translation." } : null);
+          }
         });
 
         const intentPromise = fetch('/api/intent', {
@@ -217,8 +311,12 @@ export default function Home() {
           setDraft(prev => prev ? { 
             ...prev, 
             sanity_check: data.sanity_check,
-            warning: data.warning 
+            warning: data.warning
           } : null);
+
+          if (data.warning) {
+            fetchInitialRewrite(payload.currentInput, data.warning);
+          }
         });
 
         await Promise.all([transPromise, intentPromise]);
@@ -228,6 +326,75 @@ export default function Home() {
       alert('Failed to translate. Please try again.');
     } finally {
       setLoadingMode(false);
+    }
+  };
+
+  const handleUseRewrite = (newSource: string) => {
+    setDraft(null);
+    setInput(newSource);
+    setTimeout(() => {
+      handleSubmit(false, newSource);
+    }, 0);
+  };
+
+  const fetchInitialRewrite = async (currentInputText: string, warningText: string) => {
+    setIsFetchingInitialRewrite(true);
+    try {
+      const res = await fetch('/api/rewrite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          history: interactions,
+          sourceLanguage,
+          targetLanguage,
+          tone,
+          situation,
+          currentInput: currentInputText,
+          warning: warningText
+        })
+      });
+      const data = await res.json();
+      setDraft(prev => prev ? {
+        ...prev,
+        rewriteDirection: data.rewriteDirection,
+        rewrittenSource: data.rewrittenSource,
+        rewrittenTarget: data.rewrittenTarget,
+        alternativeDirections: data.alternativeDirections
+      } : null);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsFetchingInitialRewrite(false);
+    }
+  };
+
+  const handleFetchAlternative = async (direction: string) => {
+    if (!draft) return;
+    setFetchingAlternativeDir(direction);
+    try {
+      const res = await fetch('/api/rewrite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          history: interactions,
+          sourceLanguage,
+          targetLanguage,
+          tone,
+          situation,
+          currentInput: draft.originalText,
+          warning: draft.warning,
+          direction
+        })
+      });
+      const data = await res.json();
+      setDraft(prev => prev ? {
+        ...prev,
+        rewriteDirection: direction,
+        rewrittenSource: data.rewrittenSource,
+        rewrittenTarget: data.rewrittenTarget
+      } : null);
+    } finally {
+      setFetchingAlternativeDir(null);
     }
   };
 
@@ -251,12 +418,14 @@ export default function Home() {
     setTargetLanguage(nextTarget);
     setDraft(null);
     setIsHistoryOpen(true);
+    setLoadingMode(false);
   };
 
   const handleDiscard = () => {
     if (!draft) return;
     setInput(draft.originalText);
     setDraft(null);
+    setLoadingMode(false);
   };
 
   return (
@@ -316,39 +485,158 @@ export default function Home() {
           Unlost in Translation
         </div>
         <div className="flex justify-between items-center w-full">
-          <div className="flex items-center space-x-1 flex-[2]">
-          <select 
-            value={sourceLanguage} 
-            onChange={(e) => setSourceLanguage(e.target.value)}
-            className="flex-1 text-center font-bold text-blue-600 dark:text-blue-400 text-lg outline-none bg-transparent truncate max-w-[120px]"
-          >
-            {LANGUAGES.map(lang => (
-              <option key={lang} value={lang} className="text-black dark:text-white bg-white dark:bg-gray-800">{LANGUAGE_DISPLAY_NAMES[lang]}</option>
-            ))}
-          </select>
+          <div className="flex items-center space-x-0 sm:space-x-1 flex-[2] relative">
+          
+          <div className="relative flex-1 max-w-[150px]" ref={sourceMenuRef}>
+            <button
+              onClick={() => setIsSourceMenuOpen(!isSourceMenuOpen)}
+              className="w-full flex items-center justify-center space-x-1 sm:space-x-2 p-1.5 sm:p-2 font-bold text-blue-600 dark:text-blue-400 text-base sm:text-lg rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors outline-none"
+            >
+              <span className="text-xl hidden sm:inline-block">{LANGUAGE_FLAGS[sourceLanguage]}</span>
+              <span className="truncate">{LANGUAGE_DISPLAY_NAMES[sourceLanguage]}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3 h-3 sm:w-4 sm:h-4 opacity-50 shrink-0">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+            
+            {isSourceMenuOpen && (
+              <div className="absolute left-0 mt-2 w-56 max-h-80 overflow-y-auto bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 z-50 custom-scrollbar transform origin-top-left transition-all">
+                <div className="p-1.5">
+                  {LANGUAGES.map(lang => (
+                    <button
+                      key={lang}
+                      onClick={() => { setSourceLanguage(lang); setIsSourceMenuOpen(false); }}
+                      className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold flex items-center space-x-3 transition-colors ${
+                        sourceLanguage === lang 
+                          ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' 
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      }`}
+                    >
+                      <span className="text-xl">{LANGUAGE_FLAGS[lang]}</span>
+                      <span>{LANGUAGE_DISPLAY_NAMES[lang]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
           
           <button 
             onClick={handleSwap}
-            className="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            className="p-1.5 sm:p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shrink-0"
             title="Swap Languages"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 sm:w-6 sm:h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
             </svg>
           </button>
 
-          <select 
-            value={targetLanguage} 
-            onChange={(e) => setTargetLanguage(e.target.value)}
-            className="flex-1 text-center font-bold text-blue-600 dark:text-blue-400 text-lg outline-none bg-transparent truncate max-w-[120px]"
-          >
-            {LANGUAGES.map(lang => (
-              <option key={lang} value={lang} className="text-black dark:text-white bg-white dark:bg-gray-800">{getDestLangName(lang)}</option>
-            ))}
-          </select>
+          <div className="relative flex-1 max-w-[150px]" ref={targetMenuRef}>
+            <button
+              onClick={() => setIsTargetMenuOpen(!isTargetMenuOpen)}
+              className="w-full flex items-center justify-center space-x-1 sm:space-x-2 p-1.5 sm:p-2 font-bold text-blue-600 dark:text-blue-400 text-base sm:text-lg rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors outline-none"
+            >
+              <span className="text-xl hidden sm:inline-block">{LANGUAGE_FLAGS[targetLanguage]}</span>
+              <span className="truncate">{getDestLangName(targetLanguage)}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3 h-3 sm:w-4 sm:h-4 opacity-50 shrink-0">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+            
+            {isTargetMenuOpen && (
+              <div className="absolute left-0 mt-2 w-56 max-h-80 overflow-y-auto bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 z-50 custom-scrollbar transform origin-top-left transition-all">
+                <div className="p-1.5">
+                  {LANGUAGES.map(lang => (
+                    <button
+                      key={lang}
+                      onClick={() => { setTargetLanguage(lang); setIsTargetMenuOpen(false); }}
+                      className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold flex items-center space-x-3 transition-colors ${
+                        targetLanguage === lang 
+                          ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' 
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      }`}
+                    >
+                      <span className="text-xl">{LANGUAGE_FLAGS[lang]}</span>
+                      <span>{getDestLangName(lang)}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         
         <div className="flex items-center space-x-1 justify-end flex-1">
+          <div className="relative" ref={situationMenuRef}>
+            <button
+              onClick={() => setIsSituationMenuOpen(!isSituationMenuOpen)}
+              className="flex items-center space-x-1 px-3 py-1.5 mr-1 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-2xl transition-colors outline-none shadow-sm"
+              title="Conversation Context"
+            >
+              <span className="text-base">{SITUATIONS.find(s => s.id === situation)?.icon}</span>
+              <span className="hidden sm:inline-block ml-1 whitespace-nowrap">{getStr(sourceLanguage, SITUATIONS.find(s => s.id === situation)?.labelKey || 'sitGeneral')}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3 ml-1 text-gray-400">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+            
+            {isSituationMenuOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 overflow-hidden z-50 transform origin-top-right transition-all">
+                <div className="p-1.5">
+                  {SITUATIONS.map(s => (
+                    <button
+                      key={s.id}
+                      onClick={() => { setSituation(s.id); setIsSituationMenuOpen(false); }}
+                      className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold flex items-center space-x-3 transition-colors ${
+                        situation === s.id 
+                          ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' 
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      }`}
+                    >
+                      <span className="text-xl">{s.icon}</span>
+                      <span>{getStr(sourceLanguage, s.labelKey)}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="relative" ref={toneMenuRef}>
+            <button
+              onClick={() => setIsToneMenuOpen(!isToneMenuOpen)}
+              className="flex items-center space-x-1 px-3 py-1.5 mr-1 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-2xl transition-colors outline-none shadow-sm"
+              title="Conversation Tone"
+            >
+              <span className="text-base">{TONES.find(t => t.id === tone)?.icon}</span>
+              <span className="hidden sm:inline-block ml-1 whitespace-nowrap">{getStr(sourceLanguage, TONES.find(t => t.id === tone)?.labelKey || 'toneAuto')}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3 ml-1 text-gray-400">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+            
+            {isToneMenuOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 overflow-hidden z-50 transform origin-top-right transition-all">
+                <div className="p-1.5">
+                  {TONES.map(t => (
+                    <button
+                      key={t.id}
+                      onClick={() => { setTone(t.id); setIsToneMenuOpen(false); }}
+                      className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold flex items-center space-x-3 transition-colors ${
+                        tone === t.id 
+                          ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' 
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      }`}
+                    >
+                      <span className="text-xl">{t.icon}</span>
+                      <span>{getStr(sourceLanguage, t.labelKey)}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           <button 
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             className="p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 rounded-full transition-colors text-xl"
@@ -385,14 +673,27 @@ export default function Home() {
               </span>
             </div>
 
-            <textarea
-              ref={textareaRef}
-              className="flex-1 w-full text-3xl sm:text-5xl text-gray-800 dark:text-white placeholder-gray-200 dark:placeholder-gray-700 resize-none outline-none bg-transparent py-2 leading-tight font-medium overflow-y-auto"
-              placeholder={getStr(sourceLanguage, 'typeHere')}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              disabled={loadingMode !== false}
-            />
+            <div className="flex-1 relative flex flex-col min-h-0 w-full">
+              <textarea
+                ref={textareaRef}
+                className="flex-1 w-full text-3xl sm:text-5xl text-gray-800 dark:text-white placeholder-gray-200 dark:placeholder-gray-700 resize-none outline-none bg-transparent py-2 leading-tight font-medium overflow-y-auto pr-10 sm:pr-12"
+                placeholder={getStr(sourceLanguage, 'typeHere')}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                disabled={loadingMode !== false}
+              />
+              {input.length > 0 && loadingMode === false && (
+                <button
+                  onClick={() => { setInput(''); textareaRef.current?.focus(); }}
+                  className="absolute top-2 right-0 text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-400 transition-colors bg-white/80 dark:bg-gray-900/80 rounded-full p-1.5 backdrop-blur-sm shadow-sm border border-gray-100 dark:border-gray-800"
+                  title="Clear text"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 sm:w-6 sm:h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
             
             <div className="shrink-0 pt-3 pb-1 flex gap-2 sm:gap-3">
               <button 
@@ -440,6 +741,18 @@ export default function Home() {
                   {draft.translation}
                 </p>
               </div>
+
+              <div className="mb-8 border-l-4 border-emerald-500 pl-4 py-1 bg-emerald-50/50 dark:bg-emerald-900/10 rounded-r-3xl pr-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 text-emerald-500 dark:text-emerald-400">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                  </svg>
+                  <p className="text-sm font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-widest">{getStr(sourceLanguage, 'roundTrip')} ({LANGUAGE_DISPLAY_NAMES[draft.sourceLang]})</p>
+                </div>
+                <p className={`text-2xl sm:text-3xl text-emerald-900 dark:text-emerald-300 font-medium leading-tight ${draft.roundTrip === getStr(sourceLanguage, 'generatingRoundTrip') ? 'animate-pulse opacity-70' : ''}`}>
+                  {draft.roundTrip}
+                </p>
+              </div>
               
               <div className="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-5 border border-gray-100 dark:border-gray-700/50 shadow-sm">
                 <div className="flex items-center space-x-2 mb-3">
@@ -454,6 +767,49 @@ export default function Home() {
                   <div className="mt-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50 text-amber-900 dark:text-amber-200 rounded-2xl p-4 text-sm font-medium">
                     <strong className="text-amber-800 dark:text-amber-400">⚠️ {getStr(sourceLanguage, 'warning')}</strong>
                     <p className="mt-1 opacity-90">{draft.warning}</p>
+
+                    {isFetchingInitialRewrite && (
+                      <div className="mt-4 p-4 bg-white/60 dark:bg-gray-800/60 rounded-xl border border-amber-100 dark:border-amber-800 flex items-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        <span className="text-sm font-medium text-amber-700 dark:text-amber-300 animate-pulse">{getStr(sourceLanguage, 'generatingSuggestions')}</span>
+                      </div>
+                    )}
+
+                    {!isFetchingInitialRewrite && draft.rewriteDirection && draft.rewrittenSource && (
+                      <div className={`mt-4 p-4 bg-white/60 dark:bg-gray-800/60 rounded-xl border border-amber-100 dark:border-amber-800 transition-opacity duration-300 ${fetchingAlternativeDir ? 'opacity-50 pointer-events-none' : ''}`}>
+                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                          {getStr(sourceLanguage, 'suggestedFix')}: {draft.rewriteDirection}
+                        </p>
+                        <p className="text-lg text-gray-900 dark:text-gray-100 mb-3 font-medium">"{draft.rewrittenSource}"</p>
+                        <button 
+                          onClick={() => handleUseRewrite(draft.rewrittenSource!)}
+                          className="px-4 py-2 bg-blue-600 active:bg-blue-700 text-white rounded-lg text-sm font-bold transition-colors shadow-sm"
+                        >
+                          {getStr(sourceLanguage, 'useThisVersion')}
+                        </button>
+                      </div>
+                    )}
+
+                    {!isFetchingInitialRewrite && draft.alternativeDirections && draft.alternativeDirections.length > 0 && (
+                      <div className="mt-4">
+                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">{getStr(sourceLanguage, 'otherWaysToRewrite')}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {draft.alternativeDirections.map((dir, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => handleFetchAlternative(dir)}
+                              disabled={fetchingAlternativeDir !== null}
+                              className="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 dark:bg-amber-800 dark:hover:bg-amber-700 text-amber-800 dark:text-amber-100 rounded-full text-xs font-medium transition-colors disabled:opacity-50"
+                            >
+                              {fetchingAlternativeDir === dir ? (
+                                <svg className="animate-spin h-3 w-3 inline mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                              ) : null}
+                              {dir}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -462,14 +818,13 @@ export default function Home() {
             <div className="absolute bottom-0 left-0 w-full p-3 sm:p-4 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 flex space-x-3 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] dark:shadow-none">
               <button 
                 onClick={handleDiscard} 
-                disabled={loadingMode !== false}
-                className="flex-1 py-4 sm:py-5 rounded-2xl font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 transition-colors text-base sm:text-lg disabled:opacity-50"
+                className="flex-1 py-4 sm:py-5 rounded-2xl font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 transition-colors text-base sm:text-lg"
               >
                 {getStr(sourceLanguage, 'discard')}
               </button>
               <button 
                 onClick={handleApprove} 
-                disabled={loadingMode !== false}
+                disabled={!draft || draft.roundTrip === getStr(sourceLanguage, 'generatingRoundTrip')}
                 className="flex-[2] py-4 sm:py-5 rounded-2xl font-bold text-white bg-blue-600 active:bg-blue-700 shadow-lg shadow-blue-200 dark:shadow-blue-900/20 transition-colors text-base sm:text-lg disabled:opacity-50 disabled:shadow-none"
               >
                 {getStr(sourceLanguage, 'approve')}

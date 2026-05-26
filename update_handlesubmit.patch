@@ -1,0 +1,165 @@
+--- src/app/page.tsx
++++ src/app/page.tsx
+@@ -235,10 +235,16 @@
+         return;
+       }
+ 
++      if (sourceLanguage === 'Auto-detect' && targetLanguage === 'Auto-detect') {
++        alert(getStr(sourceLanguage, 'Please select at least one explicit language (Source or Target).'));
++        setLoadingMode(false);
++        return;
++      }
++
+       const payload = {
+         imageBase64: base64String,
+         userLanguage: sourceLanguage,
+         otherLanguage: targetLanguage,
+-        isAutoDetect: targetLanguage === 'Auto-detect',
++        isAutoDetect: targetLanguage === 'Auto-detect',
++        isSourceAutoDetect: sourceLanguage === 'Auto-detect',
+       };
+ 
+@@ -248,7 +254,7 @@
+ 
+       const detectedLang = data.detectedLanguage || targetLanguage;
+       
+-      // If Auto-detect was selected, switch to the detected language.
+-      if (targetLanguage === 'Auto-detect' && detectedLang !== sourceLanguage && detectedLang !== 'Auto-detect') {
++      if (targetLanguage === 'Auto-detect' && detectedLang !== sourceLanguage && detectedLang !== 'Auto-detect') {
+         setTargetLanguage(detectedLang);
+       }
++
++      if (sourceLanguage === 'Auto-detect' && detectedLang !== targetLanguage && detectedLang !== 'Auto-detect') {
++        setSourceLanguage(detectedLang);
++      }
+ 
+-      const translationTargetLang = detectedLang === sourceLanguage ? targetLanguage : sourceLanguage;
+-      const translationSourceLang = detectedLang === sourceLanguage ? sourceLanguage : targetLanguage;
++      let translationTargetLang = targetLanguage;
++      let translationSourceLang = sourceLanguage;
++
++      if (sourceLanguage === 'Auto-detect') {
++        translationTargetLang = targetLanguage;
++        translationSourceLang = detectedLang;
++      } else {
++        translationTargetLang = detectedLang === sourceLanguage ? targetLanguage : sourceLanguage;
++        translationSourceLang = detectedLang === sourceLanguage ? sourceLanguage : targetLanguage;
++      }
+ 
+       setInteractions((prev) => [
+         ...prev,
+         {
+           id: Math.random().toString(36).substring(7),
+-          sourceLang: detectedLang,
++          sourceLang: translationSourceLang,
+-          targetLang: translationTargetLang,
++          targetLang: translationTargetLang,
+           originalText: data.originalText,
+           translation: data.translation,
+@@ -279,6 +295,11 @@
+   };
+ 
+   const handleSubmit = async (skipChecks: boolean, overrideInput?: string) => {
++    if (sourceLanguage === 'Auto-detect' && targetLanguage === 'Auto-detect') {
++      alert(getStr(sourceLanguage, 'Please select at least one explicit language (Source or Target).'));
++      return;
++    }
++
+     if (targetLanguage === 'Auto-detect') {
+       alert(getStr(sourceLanguage, 'Please select a target language or scan an image to detect the language first.'));
+       return;
+@@ -291,7 +312,8 @@
+         targetLanguage,
+         tone,
+         situation,
+-        currentInput: textToSubmit
++        currentInput: textToSubmit,
++        isSourceAutoDetect: sourceLanguage === 'Auto-detect'
+       };
+ 
+       if (skipChecks) {
+@@ -303,11 +325,16 @@
+         if (!response.ok) throw new Error('Translation failed');
+         const data = await response.json();
+ 
++        const detectedSource = (sourceLanguage === 'Auto-detect' && data.detectedSourceLanguage) 
++          ? data.detectedSourceLanguage 
++          : sourceLanguage;
++
++        if (sourceLanguage === 'Auto-detect' && data.detectedSourceLanguage) {
++          setSourceLanguage(data.detectedSourceLanguage);
++        }
++
+          setInteractions((prev) => [
+            ...prev,
+            {
+              id: Math.random().toString(36).substring(7),
+-             sourceLang: sourceLanguage,
++             sourceLang: detectedSource,
+              targetLang: targetLanguage,
+              originalText: textToSubmit,
+              translation: data.translation
+@@ -322,7 +349,7 @@
+       } else {
+         // Progressive UI - Parallel Fetching
+         setDraft({
+           originalText: textToSubmit,
+           translation: getStr(sourceLanguage, 'translating'),
+           sanity_check: getStr(sourceLanguage, 'checkingIntent'),
+           warning: null,
+           sourceLang: sourceLanguage,
+           targetLang: targetLanguage,
+           roundTrip: getStr(sourceLanguage, 'generatingRoundTrip')
+         });
+         setInput('');
+ 
+         const transPromise = fetch('/api/translate', {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({ ...payload, skipChecks: true }),
+         }).then(res => res.json()).then(async data => {
++          const detectedSource = (sourceLanguage === 'Auto-detect' && data.detectedSourceLanguage) 
++            ? data.detectedSourceLanguage 
++            : sourceLanguage;
++
++          if (sourceLanguage === 'Auto-detect' && data.detectedSourceLanguage) {
++            setSourceLanguage(data.detectedSourceLanguage);
++          }
++
+-          setDraft(prev => prev ? { ...prev, translation: data.translation } : null);
++          setDraft(prev => prev ? { ...prev, translation: data.translation, sourceLang: detectedSource } : null);
+           
+           // Initiate Round Trip Translation (B -> A)
+           try {
+             const rtPayload = {
+               history: [], // No history for literal round-trip
+               sourceLanguage: targetLanguage,
+-              targetLanguage: sourceLanguage,
++              targetLanguage: detectedSource,
+               tone: 'Auto',
+               situation,
+               currentInput: data.translation
+             };
+@@ -348,7 +375,11 @@
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify(payload),
+         }).then(res => res.json()).then(data => {
+-          setDraft(prev => prev ? { ...prev, sanity_check: data.sanity_check, warning: data.warning } : null);
++          const detectedSource = (sourceLanguage === 'Auto-detect' && data.detectedSourceLanguage) 
++            ? data.detectedSourceLanguage 
++            : sourceLanguage;
++
++          setDraft(prev => prev ? { ...prev, sanity_check: data.sanity_check, warning: data.warning, sourceLang: detectedSource } : null);
+         });
+ 
+         await Promise.all([transPromise, intentPromise]);
+@@ -581,7 +612,7 @@
+             {isSourceMenuOpen && (
+               <div className="absolute left-0 mt-2 w-56 max-h-80 overflow-y-auto bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 z-50 custom-scrollbar transform origin-top-left transition-all">
+                 <div className="p-1.5">
+-                  {LANGUAGES.map(lang => (
++                  {['Auto-detect', ...LANGUAGES].map(lang => (
+                     <button
+                       key={lang}
+                       onClick={() => { setSourceLanguage(lang); setIsSourceMenuOpen(false); }}
+                       className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold flex items-center space-x-3 transition-colors ${

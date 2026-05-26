@@ -58,7 +58,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} fixed inset-0 w-full h-full overflow-hidden antialiased`}
     >
-      <body className="w-full h-full overflow-hidden flex flex-col">{children}</body>
+      <body suppressHydrationWarning className="w-full h-full overflow-hidden flex flex-col">{children}</body>
     </html>
   );
 }

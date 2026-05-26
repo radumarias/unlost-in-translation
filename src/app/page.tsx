@@ -9,6 +9,7 @@ type Interaction = {
   targetLang: string;
   originalText: string;
   translation: string;
+  imageUrl?: string;
 };
 
 type DraftTranslation = {
@@ -41,6 +42,7 @@ const LANGUAGES = [
 ];
 
 const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
+  'Auto-detect': 'Auto-detect',
   'English': 'English',
   'Spanish': 'Español',
   'French': 'Français',
@@ -57,6 +59,7 @@ const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
 };
 
 const LANGUAGE_FLAGS: Record<string, string> = {
+  'Auto-detect': '✨',
   'English': '🇬🇧',
   'Spanish': '🇪🇸',
   'French': '🇫🇷',
@@ -110,7 +113,7 @@ export default function Home() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [interactions, setInteractions] = useState<Interaction[]>([]);
   const [input, setInput] = useState('');
-  const [loadingMode, setLoadingMode] = useState<'intent' | 'direct' | false>(false);
+  const [loadingMode, setLoadingMode] = useState<'intent' | 'direct' | 'camera' | false>(false);
   const [sourceLanguage, setSourceLanguage] = useState('English');
   const [targetLanguage, setTargetLanguage] = useState('Thai');
   const [draft, setDraft] = useState<DraftTranslation | null>(null);
@@ -220,7 +223,92 @@ export default function Home() {
     return LANGUAGE_DISPLAY_NAMES[lang];
   };
 
+  const handleCameraCapture = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setLoadingMode('camera');
+
+    try {
+      const base64String = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const payload = {
+        imageBase64: base64String,
+        userLanguage: sourceLanguage,
+        otherLanguage: targetLanguage,
+        isAutoDetect: targetLanguage === 'Auto-detect',
+        isSourceAutoDetect: sourceLanguage === 'Auto-detect',
+      };
+
+      const response = await fetch('/api/vision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error('Vision failed');
+      const data = await response.json();
+
+      const detectedLang = data.detectedLanguage || (targetLanguage === 'Auto-detect' ? sourceLanguage : targetLanguage);
+      
+      if (targetLanguage === 'Auto-detect' && detectedLang !== sourceLanguage && detectedLang !== 'Auto-detect') {
+        setTargetLanguage(detectedLang);
+      }
+
+      if (sourceLanguage === 'Auto-detect' && detectedLang !== targetLanguage && detectedLang !== 'Auto-detect') {
+        setSourceLanguage(detectedLang);
+      }
+
+      let translationTargetLang = targetLanguage;
+      let translationSourceLang = sourceLanguage;
+
+      if (sourceLanguage === 'Auto-detect') {
+        translationTargetLang = targetLanguage;
+        translationSourceLang = detectedLang;
+      } else {
+        translationTargetLang = detectedLang === sourceLanguage ? targetLanguage : sourceLanguage;
+        translationSourceLang = detectedLang === sourceLanguage ? sourceLanguage : targetLanguage;
+      }
+
+      setInteractions((prev) => [
+        ...prev,
+        {
+          id: Math.random().toString(36).substring(7),
+          sourceLang: translationSourceLang,
+          targetLang: translationTargetLang,
+          originalText: data.originalText,
+          translation: data.translation,
+          imageUrl: base64String
+        },
+      ]);
+      setIsHistoryOpen(true);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to process image.');
+    } finally {
+      setLoadingMode(false);
+      // Reset file input so same file can be selected again
+      e.target.value = '';
+    }
+  };
+
   const handleSubmit = async (skipChecks: boolean, overrideInput?: string) => {
+    if (sourceLanguage === 'Auto-detect' && targetLanguage === 'Auto-detect') {
+      alert(getStr(sourceLanguage, 'Please select at least one explicit language (Source or Target).'));
+      setLoadingMode(false);
+      return;
+    }
+
+    if (targetLanguage === 'Auto-detect') {
+      alert(getStr(sourceLanguage, 'Please select a target language or scan an image to detect the language first.'));
+      return;
+    }
+
     const textToSubmit = overrideInput || input;
     if (!textToSubmit.trim() || loadingMode !== false || (draft && !overrideInput)) return;
     setLoadingMode(skipChecks ? 'direct' : 'intent');
@@ -232,7 +320,8 @@ export default function Home() {
         targetLanguage,
         tone,
         situation,
-        currentInput: textToSubmit
+        currentInput: textToSubmit,
+        isSourceAutoDetect: sourceLanguage === 'Auto-detect'
       };
 
       if (skipChecks) {
@@ -244,11 +333,19 @@ export default function Home() {
         if (!response.ok) throw new Error('Translation failed');
         const data = await response.json();
 
+        const detectedSource = (sourceLanguage === 'Auto-detect' && data.detectedSourceLanguage) 
+          ? data.detectedSourceLanguage 
+          : sourceLanguage;
+
+        if (sourceLanguage === 'Auto-detect' && data.detectedSourceLanguage) {
+          setSourceLanguage(data.detectedSourceLanguage);
+        }
+
          setInteractions((prev) => [
            ...prev,
            {
              id: Math.random().toString(36).substring(7),
-             sourceLang: sourceLanguage,
+             sourceLang: detectedSource,
              targetLang: targetLanguage,
              originalText: textToSubmit,
              translation: data.translation
@@ -257,7 +354,7 @@ export default function Home() {
          
          // Auto hand-off flow for direct translate
          const nextSource = targetLanguage;
-         const nextTarget = sourceLanguage;
+         const nextTarget = detectedSource;
          setSourceLanguage(nextSource);
          setTargetLanguage(nextTarget);
          setInput('');
@@ -280,14 +377,22 @@ export default function Home() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...payload, skipChecks: true }),
         }).then(res => res.json()).then(async data => {
-          setDraft(prev => prev ? { ...prev, translation: data.translation } : null);
+          const detectedSource = (sourceLanguage === 'Auto-detect' && data.detectedSourceLanguage) 
+            ? data.detectedSourceLanguage 
+            : sourceLanguage;
+
+          if (sourceLanguage === 'Auto-detect' && data.detectedSourceLanguage) {
+            setSourceLanguage(data.detectedSourceLanguage);
+          }
+
+          setDraft(prev => prev ? { ...prev, translation: data.translation, sourceLang: detectedSource } : null);
           
           // Initiate Round Trip Translation (B -> A)
           try {
             const rtPayload = {
               history: [], // No history for literal round-trip
               sourceLanguage: targetLanguage,
-              targetLanguage: sourceLanguage,
+              targetLanguage: detectedSource,
               tone: 'Auto',
               situation,
               currentInput: data.translation
@@ -299,21 +404,22 @@ export default function Home() {
             });
             const rtData = await rtRes.json();
             setDraft(prev => prev ? { ...prev, roundTrip: rtData.translation } : null);
-          } catch (e) {
-            setDraft(prev => prev ? { ...prev, roundTrip: "Failed to generate back-translation." } : null);
+          } catch (error) {
+            console.error('Round trip failed', error);
+            setDraft(prev => prev ? { ...prev, roundTrip: 'Failed to generate back-translation.' } : null);
           }
         });
 
-        const intentPromise = fetch('/api/intent', {
+        const intentPromise = fetch('/api/translate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         }).then(res => res.json()).then(data => {
-          setDraft(prev => prev ? { 
-            ...prev, 
-            sanity_check: data.sanity_check,
-            warning: data.warning
-          } : null);
+          const detectedSource = (sourceLanguage === 'Auto-detect' && data.detectedSourceLanguage) 
+            ? data.detectedSourceLanguage 
+            : sourceLanguage;
+
+          setDraft(prev => prev ? { ...prev, sanity_check: data.sanity_check, warning: data.warning, sourceLang: detectedSource } : null);
 
           if (data.warning) {
             fetchInitialRewrite(payload.currentInput, data.warning);
@@ -463,9 +569,16 @@ export default function Home() {
                       : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100'
                   }`}>
                     <div className="flex justify-between items-start space-x-4">
-                      <p className="text-xl leading-snug">{displayText}</p>
+                      <div>
+                        {interaction.imageUrl && (
+                          <div className="mb-3 rounded-xl overflow-hidden border border-black/10 dark:border-white/10">
+                            <img src={interaction.imageUrl} alt="Captured" className="max-h-48 w-auto object-cover" />
+                          </div>
+                        )}
+                        <p className="text-xl leading-snug">{displayText}</p>
+                      </div>
                       <button 
-                        onClick={() => setFullScreenText(isRight ? interaction.translation : interaction.originalText)} 
+                        onClick={() => setFullScreenText(interaction.translation)} 
                         className={`shrink-0 opacity-0 group-hover:opacity-100 transition-opacity ${isRight ? 'text-blue-200 hover:text-white' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                         title="Expand"
                       >
@@ -512,7 +625,7 @@ export default function Home() {
             {isSourceMenuOpen && (
               <div className="absolute left-0 mt-2 w-56 max-h-80 overflow-y-auto bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 z-50 custom-scrollbar transform origin-top-left transition-all">
                 <div className="p-1.5">
-                  {LANGUAGES.map(lang => (
+                  {['Auto-detect', ...LANGUAGES].map(lang => (
                     <button
                       key={lang}
                       onClick={() => { setSourceLanguage(lang); setIsSourceMenuOpen(false); }}
@@ -556,7 +669,7 @@ export default function Home() {
             {isTargetMenuOpen && (
               <div className="absolute left-0 mt-2 w-56 max-h-80 overflow-y-auto bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 z-50 custom-scrollbar transform origin-top-left transition-all">
                 <div className="p-1.5">
-                  {LANGUAGES.map(lang => (
+                  {['Auto-detect', ...LANGUAGES].map(lang => (
                     <button
                       key={lang}
                       onClick={() => { setTargetLanguage(lang); setIsTargetMenuOpen(false); }}
@@ -567,7 +680,7 @@ export default function Home() {
                       }`}
                     >
                       <span className="text-xl">{LANGUAGE_FLAGS[lang]}</span>
-                      <span>{getDestLangName(lang)}</span>
+                      <span>{getDestLangName(lang) || LANGUAGE_DISPLAY_NAMES[lang]}</span>
                     </button>
                   ))}
                 </div>
@@ -706,6 +819,23 @@ export default function Home() {
             </div>
             
             <div className="shrink-0 pt-3 pb-1 flex gap-2 sm:gap-3">
+              <input type="file" id="camera-input" accept="image/*" capture="environment" className="hidden" onChange={handleCameraCapture} />
+              <button 
+                onClick={() => document.getElementById('camera-input')?.click()}
+                disabled={loadingMode !== false}
+                className="w-16 sm:w-20 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-2xl flex justify-center items-center active:bg-gray-200 dark:active:bg-gray-700 transition-colors disabled:opacity-50 shadow-sm"
+                title={getStr(sourceLanguage, 'cameraTranslation')}
+              >
+                {loadingMode === 'camera' ? (
+                  <svg className="animate-spin h-6 w-6 text-gray-700 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-7 h-7 sm:w-8 sm:h-8">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                  </svg>
+                )}
+              </button>
+              
               <button 
                 onClick={() => handleSubmit(false)}
                 disabled={loadingMode !== false || !input.trim()}

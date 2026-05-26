@@ -32,7 +32,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitDating: 'Dating',
     sitService: 'Service',
     sitEmergency: 'Emergency'
-  },
+  ,
+    cameraTranslation: 'Camera Translation',
+    processingImage: 'Processing Image...'},
   'Spanish': {
     noHistory: 'No hay historial.',
     closeHistory: 'Cerrar Historial',
@@ -66,7 +68,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitDating: 'Citas',
     sitService: 'Servicio',
     sitEmergency: 'Emergencia'
-  },
+  ,
+    cameraTranslation: 'Traducción por cámara',
+    processingImage: 'Procesando imagen...'},
   'Romanian': {
     noHistory: 'Niciun istoric.',
     closeHistory: 'Închide Istoricul',
@@ -100,7 +104,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitDating: 'Întâlniri',
     sitService: 'Servicii',
     sitEmergency: 'Urgență'
-  },
+  ,
+    cameraTranslation: 'Traducere cu camera',
+    processingImage: 'Se procesează imaginea...'},
   'French': {
     noHistory: 'Aucun historique.', closeHistory: "Fermer l'historique", you: 'Vous', translatingTo: 'Traduction vers', typeHere: 'Tapez ici...', checkingIntent: "Vérification de l'intention...", checkIntent: "Vérifier l'intention & Traduire", translating: 'Traduction...', directTranslate: 'Traduction Directe', sanityCheck: 'Vérification de Sens', warning: 'Avertissement Culturel', discard: 'Ignorer', approve: 'Approuver & Passer', replyIn: 'Répondre en', roundTrip: 'Rétro-traduction', generatingRoundTrip: 'Génération de la rétro-traduction...', suggestedFix: 'Correction Suggérée', useThisVersion: 'Utiliser cette version', otherWaysToRewrite: 'Autres façons de réécrire :', generatingSuggestions: 'Génération de suggestions...',
     toneAuto: 'Ton Auto',
@@ -175,7 +181,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitDating: 'デート',
     sitService: 'サービス',
     sitEmergency: '緊急'
-  },
+  ,
+    cameraTranslation: 'カメラ翻訳',
+    processingImage: '画像処理中...'},
   'Chinese (Mandarin)': {
     noHistory: '暂无聊天记录。', closeHistory: '关闭记录', you: '你', translatingTo: '翻译为', typeHere: '在此输入...', checkingIntent: '正在检查意图...', checkIntent: '检查意图并翻译', translating: '翻译中...', directTranslate: '直接翻译', sanityCheck: '合理性检查', warning: '文化警告', discard: '放弃', approve: '批准并交出', replyIn: '回复语言：', roundTrip: '反向翻译', generatingRoundTrip: '正在生成反向翻译...', suggestedFix: '建议修改', useThisVersion: '使用此版本', otherWaysToRewrite: '其他重写方式:', generatingSuggestions: '正在生成建议...',
     toneAuto: '自动语气',
@@ -250,7 +258,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitDating: 'การออกเดท',
     sitService: 'บริการ',
     sitEmergency: 'ฉุกเฉิน'
-  }
+  ,
+    cameraTranslation: 'แปลจากกล้อง',
+    processingImage: 'กำลังประมวลผลรูปภาพ...'}
 };
 
 export const getStr = (lang: string, key: string): string => {

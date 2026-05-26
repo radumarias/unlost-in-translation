@@ -42,6 +42,7 @@ const LANGUAGES = [
 ];
 
 const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
+  'Auto-detect': 'Auto-detect',
   'English': 'English',
   'Spanish': 'Español',
   'French': 'Français',
@@ -58,6 +59,7 @@ const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
 };
 
 const LANGUAGE_FLAGS: Record<string, string> = {
+  'Auto-detect': '✨',
   'English': '🇬🇧',
   'Spanish': '🇪🇸',
   'French': '🇫🇷',
@@ -239,6 +241,7 @@ export default function Home() {
         imageBase64: base64String,
         userLanguage: sourceLanguage,
         otherLanguage: targetLanguage,
+        isAutoDetect: targetLanguage === 'Auto-detect',
       };
 
       const response = await fetch('/api/vision', {
@@ -252,7 +255,8 @@ export default function Home() {
 
       const detectedLang = data.detectedLanguage || targetLanguage;
       
-      if (detectedLang !== sourceLanguage && detectedLang !== targetLanguage) {
+      // If Auto-detect was selected, switch to the detected language.
+      if (targetLanguage === 'Auto-detect' && detectedLang !== sourceLanguage && detectedLang !== 'Auto-detect') {
         setTargetLanguage(detectedLang);
       }
 
@@ -281,6 +285,11 @@ export default function Home() {
   };
 
   const handleSubmit = async (skipChecks: boolean, overrideInput?: string) => {
+    if (targetLanguage === 'Auto-detect') {
+      alert('Please select a target language or scan an image to detect the language first.');
+      return;
+    }
+
     const textToSubmit = overrideInput || input;
     if (!textToSubmit.trim() || loadingMode !== false || (draft && !overrideInput)) return;
     setLoadingMode(skipChecks ? 'direct' : 'intent');
@@ -623,7 +632,7 @@ export default function Home() {
             {isTargetMenuOpen && (
               <div className="absolute left-0 mt-2 w-56 max-h-80 overflow-y-auto bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 z-50 custom-scrollbar transform origin-top-left transition-all">
                 <div className="p-1.5">
-                  {LANGUAGES.map(lang => (
+                  {['Auto-detect', ...LANGUAGES].map(lang => (
                     <button
                       key={lang}
                       onClick={() => { setTargetLanguage(lang); setIsTargetMenuOpen(false); }}
@@ -634,7 +643,7 @@ export default function Home() {
                       }`}
                     >
                       <span className="text-xl">{LANGUAGE_FLAGS[lang]}</span>
-                      <span>{getDestLangName(lang)}</span>
+                      <span>{getDestLangName(lang) || LANGUAGE_DISPLAY_NAMES[lang]}</span>
                     </button>
                   ))}
                 </div>

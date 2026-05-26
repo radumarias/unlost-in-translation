@@ -791,7 +791,7 @@ export default function Home() {
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>
             </button>
             {isMoreMenuOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 z-50 flex flex-col p-2 space-y-2 transform origin-top-right transition-all">
+              <div className="absolute right-0 mt-2 w-56 max-h-[70vh] overflow-y-auto bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 z-50 flex flex-col p-2 space-y-2 transform origin-top-right transition-all">
                 <div className="flex flex-col">
                   <span className="text-xs text-gray-400 dark:text-gray-500 px-3 pt-2 pb-1 uppercase font-bold tracking-wider">Situation</span>
                   {SITUATIONS.map(s => (

@@ -9,6 +9,7 @@ type Interaction = {
   targetLang: string;
   originalText: string;
   translation: string;
+  imageUrl?: string;
 };
 
 type DraftTranslation = {
@@ -257,6 +258,7 @@ export default function Home() {
           targetLang: sourceLanguage,
           originalText: data.originalText,
           translation: data.translation,
+          imageUrl: base64String,
         },
       ]);
       setIsHistoryOpen(true);
@@ -513,7 +515,14 @@ export default function Home() {
                       : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100'
                   }`}>
                     <div className="flex justify-between items-start space-x-4">
-                      <p className="text-xl leading-snug">{displayText}</p>
+                      <div>
+                        {interaction.imageUrl && (
+                          <div className="mb-3 rounded-xl overflow-hidden border border-black/10 dark:border-white/10">
+                            <img src={interaction.imageUrl} alt="Captured" className="max-h-48 w-auto object-cover" />
+                          </div>
+                        )}
+                        <p className="text-xl leading-snug">{displayText}</p>
+                      </div>
                       <button 
                         onClick={() => setFullScreenText(isRight ? interaction.translation : interaction.originalText)} 
                         className={`shrink-0 opacity-0 group-hover:opacity-100 transition-opacity ${isRight ? 'text-blue-200 hover:text-white' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}

@@ -26,7 +26,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     toneBusiness: 'Business',
     tonePlayful: 'Playful',
     toneEmpathetic: 'Empathetic',
-    toneDirect: 'Direct'
+    toneDirect: 'Direct',
+    sitGeneral: 'General Context',
+    sitMedical: 'Medical / Hospital',
+    sitDating: 'Dating / Social',
+    sitService: 'Service / Restaurant',
+    sitEmergency: 'Emergency'
   },
   'Spanish': {
     noHistory: 'No hay historial.',
@@ -55,7 +60,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     toneBusiness: 'Negocios',
     tonePlayful: 'Juguetón',
     toneEmpathetic: 'Empático',
-    toneDirect: 'Directo'
+    toneDirect: 'Directo',
+    sitGeneral: 'Contexto General',
+    sitMedical: 'Médico / Hospital',
+    sitDating: 'Citas / Social',
+    sitService: 'Servicio / Restaurante',
+    sitEmergency: 'Emergencia'
   },
   'Romanian': {
     noHistory: 'Niciun istoric.',
@@ -84,7 +94,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     toneBusiness: 'Afaceri',
     tonePlayful: 'Jucăuș',
     toneEmpathetic: 'Empatic',
-    toneDirect: 'Direct'
+    toneDirect: 'Direct',
+    sitGeneral: 'Context General',
+    sitMedical: 'Medical / Spital',
+    sitDating: 'Întâlniri / Social',
+    sitService: 'Servicii / Restaurant',
+    sitEmergency: 'Urgență'
   },
   'French': {
     noHistory: 'Aucun historique.', closeHistory: "Fermer l'historique", you: 'Vous', translatingTo: 'Traduction vers', typeHere: 'Tapez ici...', checkingIntent: "Vérification de l'intention...", checkIntent: "Vérifier l'intention & Traduire", translating: 'Traduction...', directTranslate: 'Traduction Directe', sanityCheck: 'Vérification de Sens', warning: 'Avertissement Culturel', discard: 'Ignorer', approve: 'Approuver & Passer', replyIn: 'Répondre en', roundTrip: 'Rétro-traduction', generatingRoundTrip: 'Génération de la rétro-traduction...', suggestedFix: 'Correction Suggérée', useThisVersion: 'Utiliser cette version', otherWaysToRewrite: 'Autres façons de réécrire :', generatingSuggestions: 'Génération de suggestions...',
@@ -94,7 +109,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     toneBusiness: 'Affaires',
     tonePlayful: 'Enjoué',
     toneEmpathetic: 'Empathique',
-    toneDirect: 'Direct'
+    toneDirect: 'Direct',
+    sitGeneral: 'Contexte Général',
+    sitMedical: 'Médical / Hôpital',
+    sitDating: 'Rencontres / Social',
+    sitService: 'Service / Restaurant',
+    sitEmergency: 'Urgence'
   },
   'German': {
     noHistory: 'Kein Chat-Verlauf.', closeHistory: 'Verlauf schließen', you: 'Du', translatingTo: 'Übersetzen nach', typeHere: 'Hier tippen...', checkingIntent: 'Absicht wird geprüft...', checkIntent: 'Absicht prüfen & Übersetzen', translating: 'Übersetzen...', directTranslate: 'Direkt übersetzen', sanityCheck: 'Sinnprüfung', warning: 'Kulturelle Warnung', discard: 'Verwerfen', approve: 'Genehmigen & Übergeben', replyIn: 'Antworten auf', roundTrip: 'Rückübersetzung', generatingRoundTrip: 'Rückübersetzung wird erstellt...', suggestedFix: 'Vorgeschlagene Korrektur', useThisVersion: 'Diese Version verwenden', otherWaysToRewrite: 'Andere Formulierungsmöglichkeiten:', generatingSuggestions: 'Vorschläge werden generiert...',
@@ -104,7 +124,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     toneBusiness: 'Geschäftlich',
     tonePlayful: 'Verspielt',
     toneEmpathetic: 'Empathisch',
-    toneDirect: 'Direkt'
+    toneDirect: 'Direkt',
+    sitGeneral: 'Allgemeiner Kontext',
+    sitMedical: 'Medizinisch / Krankenhaus',
+    sitDating: 'Dating / Sozial',
+    sitService: 'Service / Restaurant',
+    sitEmergency: 'Notfall'
   },
   'Italian': {
     noHistory: 'Nessuna cronologia.', closeHistory: 'Chiudi cronologia', you: 'Tu', translatingTo: 'Traduzione in', typeHere: 'Scrivi qui...', checkingIntent: 'Verifica Intenzione...', checkIntent: 'Verifica Intenzione & Traduci', translating: 'Traduzione...', directTranslate: 'Traduzione Diretta', sanityCheck: 'Controllo di Senso', warning: 'Avviso Culturale', discard: 'Scarta', approve: 'Approva e Passa', replyIn: 'Rispondi in', roundTrip: 'Traduzione inversa', generatingRoundTrip: 'Generazione traduzione inversa...', suggestedFix: 'Correzione Suggerita', useThisVersion: 'Usa questa versione', otherWaysToRewrite: 'Altri modi per riscrivere:', generatingSuggestions: 'Generazione suggerimenti...',
@@ -114,7 +139,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     toneBusiness: 'Affari',
     tonePlayful: 'Giocoso',
     toneEmpathetic: 'Empatico',
-    toneDirect: 'Diretto'
+    toneDirect: 'Diretto',
+    sitGeneral: 'Contesto Generale',
+    sitMedical: 'Medico / Ospedale',
+    sitDating: 'Appuntamenti / Sociale',
+    sitService: 'Servizio / Ristorante',
+    sitEmergency: 'Emergenza'
   },
   'Portuguese': {
     noHistory: 'Nenhum histórico.', closeHistory: 'Fechar Histórico', you: 'Você', translatingTo: 'Traduzindo para', typeHere: 'Digite aqui...', checkingIntent: 'Verificando Intenção...', checkIntent: 'Verificar Intenção e Traduzir', translating: 'Traduzindo...', directTranslate: 'Tradução Direta', sanityCheck: 'Verificação de Sentido', warning: 'Aviso Cultural', discard: 'Descartar', approve: 'Aprovar e Passar', replyIn: 'Responder em', roundTrip: 'Tradução reversa', generatingRoundTrip: 'Gerando tradução reversa...', suggestedFix: 'Correção Sugerida', useThisVersion: 'Usar esta versão', otherWaysToRewrite: 'Outras formas de reescrever:', generatingSuggestions: 'Gerando sugestões...',
@@ -124,7 +154,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     toneBusiness: 'Negócios',
     tonePlayful: 'Brincalhão',
     toneEmpathetic: 'Empático',
-    toneDirect: 'Direto'
+    toneDirect: 'Direto',
+    sitGeneral: 'Contexto Geral',
+    sitMedical: 'Médico / Hospital',
+    sitDating: 'Encontros / Social',
+    sitService: 'Serviço / Restaurante',
+    sitEmergency: 'Emergência'
   },
   'Japanese': {
     noHistory: '履歴がありません。', closeHistory: '履歴を閉じる', you: 'あなた', translatingTo: '翻訳先', typeHere: 'ここに入力...', checkingIntent: '意図を確認中...', checkIntent: '意図を確認して翻訳', translating: '翻訳中...', directTranslate: '直接翻訳', sanityCheck: '意味の確認', warning: '文化的警告', discard: '破棄', approve: '承認して渡す', replyIn: '返信する言語:', roundTrip: '逆翻訳', generatingRoundTrip: '逆翻訳を生成中...', suggestedFix: '提案された修正', useThisVersion: 'このバージョンを使用', otherWaysToRewrite: '他の書き換え方法:', generatingSuggestions: '提案を生成中...',
@@ -134,7 +169,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     toneBusiness: 'ビジネス',
     tonePlayful: '遊び心',
     toneEmpathetic: '共感的',
-    toneDirect: '直接的'
+    toneDirect: '直接的',
+    sitGeneral: '一般的な文脈',
+    sitMedical: '医療 / 病院',
+    sitDating: 'デート / 社交',
+    sitService: 'サービス / レストラン',
+    sitEmergency: '緊急'
   },
   'Chinese (Mandarin)': {
     noHistory: '暂无聊天记录。', closeHistory: '关闭记录', you: '你', translatingTo: '翻译为', typeHere: '在此输入...', checkingIntent: '正在检查意图...', checkIntent: '检查意图并翻译', translating: '翻译中...', directTranslate: '直接翻译', sanityCheck: '合理性检查', warning: '文化警告', discard: '放弃', approve: '批准并交出', replyIn: '回复语言：', roundTrip: '反向翻译', generatingRoundTrip: '正在生成反向翻译...', suggestedFix: '建议修改', useThisVersion: '使用此版本', otherWaysToRewrite: '其他重写方式:', generatingSuggestions: '正在生成建议...',
@@ -144,7 +184,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     toneBusiness: '商务',
     tonePlayful: '调皮',
     toneEmpathetic: '同情',
-    toneDirect: '直接'
+    toneDirect: '直接',
+    sitGeneral: '一般语境',
+    sitMedical: '医疗/医院',
+    sitDating: '约会/社交',
+    sitService: '服务/餐厅',
+    sitEmergency: '紧急'
   },
   'Korean': {
     noHistory: '채팅 기록이 없습니다.', closeHistory: '기록 닫기', you: '나', translatingTo: '번역 대상', typeHere: '여기에 입력...', checkingIntent: '의도 확인 중...', checkIntent: '의도 확인 및 번역', translating: '번역 중...', directTranslate: '직접 번역', sanityCheck: '의미 확인', warning: '문화적 경고', discard: '취소', approve: '승인 및 넘기기', replyIn: '답장 언어:', roundTrip: '역번역', generatingRoundTrip: '역번역 생성 중...', suggestedFix: '제안된 수정', useThisVersion: '이 버전 사용', otherWaysToRewrite: '다른 다시 쓰기 방법:', generatingSuggestions: '제안 생성 중...',
@@ -154,7 +199,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     toneBusiness: '비즈니스',
     tonePlayful: '장난스러운',
     toneEmpathetic: '공감하는',
-    toneDirect: '직접적인'
+    toneDirect: '직접적인',
+    sitGeneral: '일반적인 상황',
+    sitMedical: '의료 / 병원',
+    sitDating: '데이트 / 소셜',
+    sitService: '서비스 / 레스토랑',
+    sitEmergency: '비상'
   },
   'Russian': {
     noHistory: 'Нет истории.', closeHistory: 'Закрыть историю', you: 'Вы', translatingTo: 'Перевод на', typeHere: 'Введите текст...', checkingIntent: 'Проверка намерений...', checkIntent: 'Проверить намерение и перевести', translating: 'Перевод...', directTranslate: 'Прямой перевод', sanityCheck: 'Проверка смысла', warning: 'Культурное предупреждение', discard: 'Отменить', approve: 'Одобрить и передать', replyIn: 'Ответить на', roundTrip: 'Обратный перевод', generatingRoundTrip: 'Создание обратного перевода...', suggestedFix: 'Предлагаемое исправление', useThisVersion: 'Использовать эту версию', otherWaysToRewrite: 'Другие способы переписать:', generatingSuggestions: 'Создание предложений...',
@@ -164,7 +214,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     toneBusiness: 'Деловой',
     tonePlayful: 'Игривый',
     toneEmpathetic: 'Чуткий',
-    toneDirect: 'Прямой'
+    toneDirect: 'Прямой',
+    sitGeneral: 'Общий Контекст',
+    sitMedical: 'Медицина / Больница',
+    sitDating: 'Свидания / Общение',
+    sitService: 'Сервис / Ресторан',
+    sitEmergency: 'Чрезвычайная Ситуация'
   },
   'Arabic': {
     noHistory: 'لا يوجد سجل للمحادثة.', closeHistory: 'إغلاق السجل', you: 'أنت', translatingTo: 'ترجمة إلى', typeHere: 'اكتب هنا...', checkingIntent: 'التحقق من القصد...', checkIntent: 'التحقق من القصد والترجمة', translating: 'جاري الترجمة...', directTranslate: 'ترجمة مباشرة', sanityCheck: 'التحقق من المعنى', warning: 'تحذير ثقافي', discard: 'تجاهل', approve: 'موافقة وتسليم', replyIn: 'الرد بـ', roundTrip: 'ترجمة عكسية', generatingRoundTrip: 'جاري إنشاء ترجمة عكسية...', suggestedFix: 'إصلاح مقترح', useThisVersion: 'استخدم هذه النسخة', otherWaysToRewrite: 'طرق أخرى لإعادة الكتابة:', generatingSuggestions: 'جاري إنشاء اقتراحات...',
@@ -174,7 +229,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     toneBusiness: 'عمل',
     tonePlayful: 'مرح',
     toneEmpathetic: 'متعاطف',
-    toneDirect: 'مباشر'
+    toneDirect: 'مباشر',
+    sitGeneral: 'سياق عام',
+    sitMedical: 'طبي / مستشفى',
+    sitDating: 'مواعدة / اجتماعي',
+    sitService: 'خدمة / مطعم',
+    sitEmergency: 'طوارئ'
   },
   'Thai': {
     noHistory: 'ไม่มีประวัติการแชท', closeHistory: 'ปิดประวัติ', you: 'คุณ', translatingTo: 'แปลเป็น', typeHere: 'พิมพ์ที่นี่...', checkingIntent: 'กำลังตรวจสอบเจตนา...', checkIntent: 'ตรวจสอบเจตนา & แปล', translating: 'กำลังแปล...', directTranslate: 'แปลโดยตรง', sanityCheck: 'ตรวจสอบความเข้าใจ', warning: 'คำเตือนทางวัฒนธรรม', discard: 'ยกเลิก', approve: 'อนุมัติ & ส่งต่อ', replyIn: 'ตอบกลับเป็น', roundTrip: 'แปลกลับ', generatingRoundTrip: 'กำลังสร้างคำแปลกลับ...', suggestedFix: 'การแก้ไขที่แนะนำ', useThisVersion: 'ใช้เวอร์ชันนี้', otherWaysToRewrite: 'วิธีอื่นๆ ในการเขียนใหม่:', generatingSuggestions: 'กำลังสร้างคำแนะนำ...',
@@ -184,7 +244,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     toneBusiness: 'ธุรกิจ',
     tonePlayful: 'ขี้เล่น',
     toneEmpathetic: 'เห็นอกเห็นใจ',
-    toneDirect: 'ตรงไปตรงมา'
+    toneDirect: 'ตรงไปตรงมา',
+    sitGeneral: 'บริบททั่วไป',
+    sitMedical: 'การแพทย์ / โรงพยาบาล',
+    sitDating: 'การออกเดท / สังคม',
+    sitService: 'บริการ / ร้านอาหาร',
+    sitEmergency: 'ฉุกเฉิน'
   }
 };
 

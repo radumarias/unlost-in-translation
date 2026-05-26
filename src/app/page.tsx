@@ -98,6 +98,14 @@ const TONES = [
   { id: 'Direct', icon: '🎯', labelKey: 'toneDirect' },
 ];
 
+const SITUATIONS = [
+  { id: 'General', icon: '🌍', labelKey: 'sitGeneral' },
+  { id: 'Medical', icon: '🏥', labelKey: 'sitMedical' },
+  { id: 'Dating', icon: '❤️', labelKey: 'sitDating' },
+  { id: 'Service', icon: '🍽️', labelKey: 'sitService' },
+  { id: 'Emergency', icon: '🚨', labelKey: 'sitEmergency' },
+];
+
 export default function Home() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [interactions, setInteractions] = useState<Interaction[]>([]);
@@ -111,6 +119,7 @@ export default function Home() {
   const [fetchingAlternativeDir, setFetchingAlternativeDir] = useState<string | null>(null);
   const [isFetchingInitialRewrite, setIsFetchingInitialRewrite] = useState(false);
   const [isToneMenuOpen, setIsToneMenuOpen] = useState(false);
+  const [isSituationMenuOpen, setIsSituationMenuOpen] = useState(false);
   const [isSourceMenuOpen, setIsSourceMenuOpen] = useState(false);
   const [isTargetMenuOpen, setIsTargetMenuOpen] = useState(false);
   
@@ -121,6 +130,7 @@ export default function Home() {
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const toneMenuRef = useRef<HTMLDivElement>(null);
+  const situationMenuRef = useRef<HTMLDivElement>(null);
   const sourceMenuRef = useRef<HTMLDivElement>(null);
   const targetMenuRef = useRef<HTMLDivElement>(null);
 
@@ -128,6 +138,9 @@ export default function Home() {
     const handleClickOutside = (event: MouseEvent) => {
       if (toneMenuRef.current && !toneMenuRef.current.contains(event.target as Node)) {
         setIsToneMenuOpen(false);
+      }
+      if (situationMenuRef.current && !situationMenuRef.current.contains(event.target as Node)) {
+        setIsSituationMenuOpen(false);
       }
       if (sourceMenuRef.current && !sourceMenuRef.current.contains(event.target as Node)) {
         setIsSourceMenuOpen(false);
@@ -211,11 +224,12 @@ export default function Home() {
     setLoadingMode(skipChecks ? 'direct' : 'intent');
 
     try {
-      const payload = { 
+      const payload = {
         history: interactions.map(i => ({ speakerLang: i.sourceLang, text: i.originalText })),
         sourceLanguage,
         targetLanguage,
         tone,
+        situation,
         currentInput: textToSubmit
       };
 
@@ -273,6 +287,7 @@ export default function Home() {
               sourceLanguage: targetLanguage,
               targetLanguage: sourceLanguage,
               tone: 'Auto',
+              situation,
               currentInput: data.translation
             };
             const rtRes = await fetch('/api/translate', {
@@ -331,6 +346,8 @@ export default function Home() {
           history: interactions,
           sourceLanguage,
           targetLanguage,
+          tone,
+          situation,
           currentInput: currentInputText,
           warning: warningText
         })
@@ -362,6 +379,7 @@ export default function Home() {
           sourceLanguage,
           targetLanguage,
           tone,
+          situation,
           currentInput: draft.originalText,
           warning: draft.warning,
           direction
@@ -548,6 +566,41 @@ export default function Home() {
         </div>
         
         <div className="flex items-center space-x-1 justify-end flex-1">
+          <div className="relative" ref={situationMenuRef}>
+            <button
+              onClick={() => setIsSituationMenuOpen(!isSituationMenuOpen)}
+              className="flex items-center space-x-1 px-3 py-1.5 mr-1 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-2xl transition-colors outline-none shadow-sm"
+              title="Conversation Context"
+            >
+              <span className="text-base">{SITUATIONS.find(s => s.id === situation)?.icon}</span>
+              <span className="hidden sm:inline-block ml-1">{getStr(sourceLanguage, SITUATIONS.find(s => s.id === situation)?.labelKey || 'sitGeneral')}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3 ml-1 text-gray-400">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+            
+            {isSituationMenuOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-gray-950 border border-gray-100 dark:border-gray-800 overflow-hidden z-50 transform origin-top-right transition-all">
+                <div className="p-1.5">
+                  {SITUATIONS.map(s => (
+                    <button
+                      key={s.id}
+                      onClick={() => { setSituation(s.id); setIsSituationMenuOpen(false); }}
+                      className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold flex items-center space-x-3 transition-colors ${
+                        situation === s.id 
+                          ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' 
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      }`}
+                    >
+                      <span className="text-xl">{s.icon}</span>
+                      <span>{getStr(sourceLanguage, s.labelKey)}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="relative" ref={toneMenuRef}>
             <button
               onClick={() => setIsToneMenuOpen(!isToneMenuOpen)}

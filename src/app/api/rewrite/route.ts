@@ -8,7 +8,7 @@ const google = createGoogleGenerativeAI({
 
 export async function POST(req: Request) {
   try {
-    const { history = [], sourceLanguage = 'English', targetLanguage = 'Spanish', currentInput, warning, direction, tone = 'Auto' } = await req.json();
+    const { history = [], sourceLanguage = 'English', targetLanguage = 'Spanish', currentInput, warning, direction, tone = 'Auto', situation = 'General' } = await req.json();
 
     if (!currentInput) {
       return Response.json({ error: 'Missing current input' }, { status: 400 });
@@ -35,6 +35,7 @@ ${isInitial
   ? `Your task is to provide an initial suggested rewrite to fix the warning, and suggest 2 other alternative directions for rewriting.` 
   : `The user has requested you to rewrite their message using the following direction/style: "${direction}"\nYour task is to rewrite the user's message in ${sourceLanguage} according to the requested direction.`}
 ${tone !== 'Auto' ? `\nIMPORTANT: The requested conversation tone is "${tone}". The rewritten message MUST reflect this tone accurately.` : ''}
+${situation !== 'General' ? `\nIMPORTANT: The requested situation/context is "${situation}". The rewritten message MUST be tailored to this specific situation in terms of vocabulary and politeness.` : ''}
 `;
 
       const result = await generateObject({

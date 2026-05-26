@@ -259,6 +259,7 @@ export default function Home() {
           translation: data.translation,
         },
       ]);
+      setIsHistoryOpen(true);
     } catch (error) {
       console.error(error);
       alert('Failed to process image.');

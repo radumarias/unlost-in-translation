@@ -117,6 +117,7 @@ export default function Home() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [tone, setTone] = useState('Auto');
   const [situation, setSituation] = useState('General');
+  const [fullScreenText, setFullScreenText] = useState<string | null>(null);
   const [fetchingAlternativeDir, setFetchingAlternativeDir] = useState<string | null>(null);
   const [isFetchingInitialRewrite, setIsFetchingInitialRewrite] = useState(false);
   const [isToneMenuOpen, setIsToneMenuOpen] = useState(false);
@@ -456,12 +457,21 @@ export default function Home() {
 
               return (
                 <div key={interaction.id} className={`flex flex-col w-full ${isRight ? 'items-end' : 'items-start'}`}>
-                  <div className={`max-w-[85%] sm:max-w-[70%] rounded-3xl p-5 shadow-sm ${
+                  <div className={`group relative max-w-[85%] sm:max-w-[70%] rounded-3xl p-5 shadow-sm ${
                     isRight 
                       ? 'bg-blue-600 text-white rounded-br-none' 
                       : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100'
                   }`}>
-                    <p className="text-xl leading-snug">{displayText}</p>
+                    <div className="flex justify-between items-start space-x-4">
+                      <p className="text-xl leading-snug">{displayText}</p>
+                      <button 
+                        onClick={() => setFullScreenText(isRight ? interaction.translation : interaction.originalText)} 
+                        className={`shrink-0 opacity-0 group-hover:opacity-100 transition-opacity ${isRight ? 'text-blue-200 hover:text-white' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                        title="Expand"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -730,17 +740,22 @@ export default function Home() {
         ) : (
           <div className="flex-1 flex flex-col relative h-full">
             <div className="flex-1 overflow-y-auto px-6 pt-6 pb-28">
-              <div className="mb-6">
-                <p className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">{LANGUAGE_DISPLAY_NAMES[draft.sourceLang]}</p>
-                <p className="text-xl sm:text-2xl text-gray-700 dark:text-gray-300">{draft.originalText}</p>
+            
+            {/* CURRENT DRAFT BUBBLE */}
+            <div className="flex flex-col items-end w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="max-w-[85%] sm:max-w-[70%] bg-blue-600 text-white rounded-3xl rounded-br-none p-5 shadow-md">
+                <p className="text-xl leading-snug mb-3">{draft.originalText}</p>
+                <div className="bg-white/10 rounded-2xl p-4 mt-2 relative">
+                  <div className="flex justify-between items-start mb-1">
+                    <p className="text-xs text-blue-200 uppercase tracking-wider font-bold">{getDestLangName(draft.targetLang)}</p>
+                    <button onClick={() => setFullScreenText(draft.translation)} className="text-white/70 hover:text-white transition-colors" title="Expand Translation">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>
+                    </button>
+                  </div>
+                  <p className="text-lg font-medium">{draft.translation}</p>
+                </div>
               </div>
-              
-              <div className="mb-8 border-l-4 border-blue-500 pl-4 py-1">
-                <p className="text-sm font-bold text-blue-500 dark:text-blue-400 uppercase tracking-widest mb-2">{LANGUAGE_DISPLAY_NAMES[draft.targetLang]}</p>
-                <p className={`text-3xl sm:text-5xl text-blue-900 dark:text-blue-300 font-medium leading-tight ${draft.translation === getStr(sourceLanguage, 'translating') ? 'animate-pulse opacity-70' : ''}`}>
-                  {draft.translation}
-                </p>
-              </div>
+            </div>
 
               <div className="mb-8 border-l-4 border-emerald-500 pl-4 py-1 bg-emerald-50/50 dark:bg-emerald-900/10 rounded-r-3xl pr-4">
                 <div className="flex items-center space-x-2 mb-2">
@@ -833,6 +848,34 @@ export default function Home() {
           </div>
         )}
       </main>
+
+      {/* FLASHCARD / FULL-SCREEN MODE MODAL */}
+      {fullScreenText && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-white dark:bg-gray-900 animate-in fade-in duration-200"
+          onClick={() => setFullScreenText(null)}
+        >
+          <button 
+            className="absolute top-6 right-6 p-4 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white transition-colors outline-none"
+            onClick={() => setFullScreenText(null)}
+            title="Close"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-10 h-10">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          <div 
+            className="max-w-4xl w-full text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-5xl md:text-7xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white break-words">
+              {fullScreenText}
+            </p>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

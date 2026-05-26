@@ -120,6 +120,7 @@ export default function Home() {
   const [draft, setDraft] = useState<DraftTranslation | null>(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [expandedHelpSection, setExpandedHelpSection] = useState<string | null>(null);
   const [tone, setTone] = useState('Auto');
   const [situation, setSituation] = useState('General');
   const [fullScreenText, setFullScreenText] = useState<string | null>(null);
@@ -554,28 +555,108 @@ export default function Home() {
           isHelpOpen ? 'translate-y-0 h-full pt-[76px]' : '-translate-y-full h-full pt-[76px]'
         }`}
       >
-        <div className="flex-1 overflow-y-auto px-6 pb-6 pt-6 text-gray-800 dark:text-gray-200 space-y-6">
-          <h2 className="text-2xl font-bold mb-4">How to use Unlost in Translation</h2>
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-6 pt-6 text-gray-800 dark:text-gray-200">
+          <h2 className="text-2xl font-bold mb-6 px-2">How to use Unlost in Translation</h2>
           
-          <section>
-            <h3 className="text-xl font-bold mb-2 flex items-center space-x-2"><span>🎤</span> <span>Voice & Text Translation</span></h3>
-            <p className="opacity-90 leading-relaxed">Speak or type naturally. We auto-detect your language and provide a precise translation along with a <strong>Sanity Check</strong> back-translation so you know exactly what the other person is hearing.</p>
-          </section>
-
-          <section>
-            <h3 className="text-xl font-bold mb-2 flex items-center space-x-2"><span>⚠️</span> <span>Cultural Warnings & Idioms</span></h3>
-            <p className="opacity-90 leading-relaxed">If your phrase contains an idiom or could be culturally offensive when translated directly, we'll explain the cultural nuance and provide the closest native equivalent.</p>
-          </section>
-          
-          <section>
-            <h3 className="text-xl font-bold mb-2 flex items-center space-x-2"><span>✨</span> <span>Tones & Situations</span></h3>
-            <p className="opacity-90 leading-relaxed">Use the dropdown menus to adapt your message for a specific tone (e.g. Formal, Casual, Empathetic) or situation (e.g. Dating, Medical, Emergency) to ensure you strike the right chord.</p>
-          </section>
-          
-          <section>
-            <h3 className="text-xl font-bold mb-2 flex items-center space-x-2"><span>📸</span> <span>Camera Translation</span></h3>
-            <p className="opacity-90 leading-relaxed">Tap the camera icon to snap a picture of a sign, menu, or document and instantly get the meaning and translation.</p>
-          </section>
+          <div className="space-y-3">
+            {[
+              {
+                id: 'voice-text',
+                icon: '🎤',
+                title: 'Voice & Text Translation',
+                short: 'Speak or type naturally to get instant translations.',
+                details: (
+                  <div className="space-y-3 mt-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-200 dark:border-gray-800 pt-3">
+                    <p>Tap the microphone to speak, or just start typing. The app will automatically translate your message to the target language.</p>
+                    <p><strong>Sanity Check:</strong> We don't just translate! We provide a "Sanity Check" back-translation. This tells you exactly what the translated phrase means in your own language, ensuring your true intent is preserved.</p>
+                  </div>
+                )
+              },
+              {
+                id: 'cultural',
+                icon: '⚠️',
+                title: 'Cultural Warnings & Idioms',
+                short: 'Avoid embarrassing mistakes and translate idioms perfectly.',
+                details: (
+                  <div className="space-y-3 mt-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-200 dark:border-gray-800 pt-3">
+                    <p>If you say something like "It's raining cats and dogs," a literal translation makes no sense. The app detects idioms and gives you the native equivalent instead.</p>
+                    <p>It also warns you if a direct translation might be culturally offensive or inappropriate in the destination language.</p>
+                  </div>
+                )
+              },
+              {
+                id: 'tones',
+                icon: '✨',
+                title: 'Tones & Situations',
+                short: 'Adapt your message for the perfect context.',
+                details: (
+                  <div className="space-y-3 mt-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-200 dark:border-gray-800 pt-3">
+                    <p>Use the dropdown menus at the top to change the <strong>Tone</strong> (e.g. Formal, Casual, Empathetic) or the <strong>Situation</strong> (e.g. Dating, Medical, Emergency).</p>
+                    <p>The AI will completely rewrite your translation to fit the scenario. For example, a medical situation ensures highly accurate anatomical terms, while a dating situation makes you sound charming.</p>
+                  </div>
+                )
+              },
+              {
+                id: 'camera',
+                icon: '📸',
+                title: 'Camera Translation',
+                short: 'Snap a picture to translate signs and menus.',
+                details: (
+                  <div className="space-y-3 mt-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-200 dark:border-gray-800 pt-3">
+                    <p>Tap the Camera icon to take a photo or upload an image. The AI will analyze the image and translate any text it finds into your language.</p>
+                    <p>It's smart enough to understand the context of the image (like a restaurant menu or a street sign) to give you the most accurate meaning.</p>
+                  </div>
+                )
+              },
+              {
+                id: 'history',
+                icon: '🕒',
+                title: 'Chat History & Expand',
+                short: 'Review past translations and show them clearly.',
+                details: (
+                  <div className="space-y-3 mt-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-200 dark:border-gray-800 pt-3">
+                    <p>Tap the History icon (the clock in the top right) to see all your recent translations in a chat-like interface.</p>
+                    <p><strong>Expand:</strong> Hover or tap on any translated message block to reveal the Expand icon. Clicking it makes the text huge and full-screen—perfect for showing it to someone else!</p>
+                  </div>
+                )
+              },
+              {
+                id: 'auto-lang',
+                icon: '🌐',
+                title: 'Auto Language Detection',
+                short: 'Seamless bilingual conversations without toggling.',
+                details: (
+                  <div className="space-y-3 mt-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-200 dark:border-gray-800 pt-3">
+                    <p>When the Source Language is set to <strong>Auto</strong>, the app listens or reads and automatically figures out who is speaking.</p>
+                    <p>If you speak English, it translates to Thai. If the other person speaks Thai, it automatically translates back to English. You never have to switch languages back and forth!</p>
+                  </div>
+                )
+              }
+            ].map(section => (
+              <div 
+                key={section.id} 
+                className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 cursor-pointer transition-all"
+                onClick={() => setExpandedHelpSection(expandedHelpSection === section.id ? null : section.id)}
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-bold flex items-center space-x-2 text-gray-900 dark:text-white">
+                      <span>{section.icon}</span> <span>{section.title}</span>
+                    </h3>
+                    <p className={`text-sm text-gray-500 dark:text-gray-400 mt-1 transition-all ${expandedHelpSection === section.id ? 'hidden' : 'block'}`}>
+                      {section.short}
+                    </p>
+                  </div>
+                  <div className={`transform transition-transform text-gray-400 ${expandedHelpSection === section.id ? 'rotate-180' : ''}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </div>
+                </div>
+                {expandedHelpSection === section.id && section.details}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

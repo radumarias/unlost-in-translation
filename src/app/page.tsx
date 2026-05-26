@@ -992,7 +992,7 @@ export default function Home() {
 
                     {draft.idiom_explanation && (
                       <div className={draft.warning ? "pt-3 border-t border-amber-200/50 dark:border-amber-700/30" : ""}>
-                        <strong className="text-amber-800 dark:text-amber-400">💡 Idiom Explanation</strong>
+                        <strong className="text-amber-800 dark:text-amber-400">💡 {getStr(sourceLanguage, 'idiomExplanation')}</strong>
                         <p className="mt-1 opacity-90">{draft.idiom_explanation}</p>
                       </div>
                     )}

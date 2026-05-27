@@ -144,6 +144,46 @@ export default function Home() {
   const targetMenuRef = useRef<HTMLDivElement>(null);
   const moreMenuRef = useRef<HTMLDivElement>(null);
 
+  // Load from URL on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const textParam = params.get('text');
+      if (textParam) setInput(textParam);
+      
+      const srcParam = params.get('src');
+      if (srcParam) setSourceLanguage(srcParam);
+      
+      const tgtParam = params.get('tgt');
+      if (tgtParam) setTargetLanguage(tgtParam);
+      
+      const situationParam = params.get('situation');
+      if (situationParam) setSituation(situationParam);
+      
+      const toneParam = params.get('tone');
+      if (toneParam) setTone(toneParam);
+    }
+  }, []);
+
+  // Save to URL on change
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const timeout = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      if (input) params.set('text', input);
+      else params.delete('text');
+      
+      params.set('src', sourceLanguage);
+      params.set('tgt', targetLanguage);
+      params.set('situation', situation);
+      params.set('tone', tone);
+      
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      window.history.replaceState({}, '', newUrl);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [input, sourceLanguage, targetLanguage, situation, tone]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (toneMenuRef.current && !toneMenuRef.current.contains(event.target as Node)) {

@@ -1252,7 +1252,7 @@ export default function Home() {
           </button>
           
           <div 
-            className="max-w-4xl w-full text-center"
+            className="max-w-4xl w-full text-center max-h-[85vh] overflow-y-auto custom-scrollbar px-4"
             onClick={(e) => e.stopPropagation()}
           >
             <p className="text-5xl md:text-7xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white break-words">

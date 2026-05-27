@@ -190,7 +190,8 @@ export default function Home() {
     if (typeof window === 'undefined') return;
     const timeout = setTimeout(() => {
       const params = new URLSearchParams(window.location.search);
-      if (input) params.set('text', input);
+      const textToSave = draft?.originalText || input;
+      if (textToSave) params.set('text', textToSave);
       else params.delete('text');
       
       params.set('src', sourceLanguage);
@@ -202,7 +203,7 @@ export default function Home() {
       window.history.replaceState({}, '', newUrl);
     }, 500);
     return () => clearTimeout(timeout);
-  }, [input, sourceLanguage, targetLanguage, situation, tone]);
+  }, [input, draft?.originalText, sourceLanguage, targetLanguage, situation, tone]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

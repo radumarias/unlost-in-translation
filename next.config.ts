@@ -1,6 +1,5 @@
 import type { NextConfig } from "next";
 import { execSync } from "child_process";
-import { register } from "module";
 
 let commitDate = "";
 let commitHash = process.env.VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || "";
@@ -19,13 +18,17 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_APP_VERSION: `v${commitDate} (${commitHash})`,
   },
+
+  turbopack: {},
 };
 
-const withPWA = require("next-pwa")({
+const withPWA = require("@ducanh2912/next-pwa").default({
   dest: "public",
   disable: process.env.NODE_ENV === "development",
   register: true,
-  skipWaiting: true
+  fallbacks: {
+    document: "/~offline",
+  },
 });
 
 export default withPWA(nextConfig);

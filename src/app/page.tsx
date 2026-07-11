@@ -198,6 +198,7 @@ export default function Home() {
       params.set('tgt', targetLanguage);
       params.set('situation', situation);
       params.set('tone', tone);
+      localStorage.setItem('unlost_lang', sourceLanguage);
       
       const newUrl = `${window.location.pathname}?${params.toString()}`;
       window.history.replaceState({}, '', newUrl);

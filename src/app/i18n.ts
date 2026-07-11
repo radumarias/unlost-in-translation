@@ -35,7 +35,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitEmergency: 'Emergency'
   ,
     cameraTranslation: 'Camera Translation',
-    processingImage: 'Processing Image...'},
+    processingImage: 'Processing Image...',
+    offlineTitle: 'You are currently offline',
+    offlineMessage: 'It looks like you lost your internet connection. In the upcoming updates, your offline chat history and phrasebook will be available right here!',},
   'Spanish': {
     idiomExplanation: 'Explicación del Modismo',
     noHistory: 'No hay historial.',
@@ -72,7 +74,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitEmergency: 'Emergencia'
   ,
     cameraTranslation: 'Traducción por cámara',
-    processingImage: 'Procesando imagen...'},
+    processingImage: 'Procesando imagen...',
+    offlineTitle: 'Actualmente estás sin conexión',
+    offlineMessage: 'Parece que perdiste tu conexión a internet. ...',},
   'Romanian': {
     idiomExplanation: 'Explicația Expresiei',
     noHistory: 'Niciun istoric.',
@@ -109,7 +113,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitEmergency: 'Urgență'
   ,
     cameraTranslation: 'Traducere cu camera',
-    processingImage: 'Se procesează imaginea...'},
+    processingImage: 'Se procesează imaginea...',
+    offlineTitle: 'În prezent ești offline',
+    offlineMessage: 'Se pare că ai pierdut conexiunea la internet. Verifică-ți conexiunea și încearcă din nou.',},
   'French': {
     idiomExplanation: "Explication de l'Idiome",
     noHistory: 'Aucun historique.', closeHistory: "Fermer l'historique", you: 'Vous', translatingTo: 'Traduction vers', typeHere: 'Tapez ici...', checkingIntent: "Vérification de l'intention...", checkIntent: "Vérifier l'intention & Traduire", translating: 'Traduction...', directTranslate: 'Traduction Directe', sanityCheck: 'Vérification de Sens', warning: 'Avertissement Culturel', discard: 'Ignorer', approve: 'Approuver & Passer', replyIn: 'Répondre en', roundTrip: 'Rétro-traduction', generatingRoundTrip: 'Génération de la rétro-traduction...', suggestedFix: 'Correction Suggérée', useThisVersion: 'Utiliser cette version', otherWaysToRewrite: 'Autres façons de réécrire :', generatingSuggestions: 'Génération de suggestions...',
@@ -124,7 +130,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitMedical: 'Médical',
     sitDating: 'Rencontres',
     sitService: 'Service',
-    sitEmergency: 'Urgence'
+    sitEmergency: 'Urgence',
+    offlineTitle: 'Vous êtes actuellement hors ligne',
+    offlineMessage: 'Il semble que vous ayez perdu votre connexion Internet. Vérifiez votre connexion et réessayez.',
   },
   'German': {
     idiomExplanation: 'Erklärung der Redewendung',
@@ -140,7 +148,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitMedical: 'Medizinisch',
     sitDating: 'Dating',
     sitService: 'Service',
-    sitEmergency: 'Notfall'
+    sitEmergency: 'Notfall',
+    offlineTitle: 'Sie sind derzeit offline',
+    offlineMessage: 'Es scheint, dass Sie Ihre Internetverbindung verloren haben. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
   },
   'Italian': {
     idiomExplanation: 'Spiegazione del Modo di Dire',
@@ -156,7 +166,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitMedical: 'Medico',
     sitDating: 'Appuntamenti',
     sitService: 'Servizio',
-    sitEmergency: 'Emergenza'
+    sitEmergency: 'Emergenza',
+    offlineTitle: 'Al momento sei offline',
+    offlineMessage: 'Sembra che tu abbia perso la connessione a Internet. Controlla la connessione e riprova.',
   },
   'Portuguese': {
     idiomExplanation: 'Explicação de Expressão Idiomática',
@@ -172,7 +184,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitMedical: 'Médico',
     sitDating: 'Encontros',
     sitService: 'Serviço',
-    sitEmergency: 'Emergência'
+    sitEmergency: 'Emergência',
+    offlineTitle: 'Você está offline no momento',
+    offlineMessage: 'Parece que você perdeu sua conexão com a internet. Verifique sua conexão e tente novamente.',
   },
   'Japanese': {
     idiomExplanation: '慣用句の説明',
@@ -191,7 +205,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitEmergency: '緊急'
   ,
     cameraTranslation: 'カメラ翻訳',
-    processingImage: '画像処理中...'},
+    processingImage: '画像処理中...',
+    offlineTitle: '現在オフラインです',
+    offlineMessage: 'インターネット接続が切断されたようです。接続を確認して、もう一度お試しください。',},
   'Chinese (Mandarin)': {
     idiomExplanation: '习语解释',
     noHistory: '暂无聊天记录。', closeHistory: '关闭记录', you: '你', translatingTo: '翻译为', typeHere: '在此输入...', checkingIntent: '正在检查意图...', checkIntent: '检查意图并翻译', translating: '翻译中...', directTranslate: '直接翻译', sanityCheck: '合理性检查', warning: '文化警告', discard: '放弃', approve: '批准并交出', replyIn: '回复语言：', roundTrip: '反向翻译', generatingRoundTrip: '正在生成反向翻译...', suggestedFix: '建议修改', useThisVersion: '使用此版本', otherWaysToRewrite: '其他重写方式:', generatingSuggestions: '正在生成建议...',
@@ -206,7 +222,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitMedical: '医疗',
     sitDating: '约会',
     sitService: '服务',
-    sitEmergency: '紧急'
+    sitEmergency: '紧急',
+    offlineTitle: '当前处于离线状态',
+    offlineMessage: '看起来您已断开互联网连接。请检查您的网络连接，然后重试。',
   },
   'Korean': {
     idiomExplanation: '관용구 설명',
@@ -222,7 +240,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitMedical: '의료',
     sitDating: '데이트',
     sitService: '서비스',
-    sitEmergency: '비상'
+    sitEmergency: '비상',
+    offlineTitle: '현재 오프라인 상태입니다',
+    offlineMessage: '인터넷 연결이 끊어진 것 같습니다. 연결을 확인한 후 다시 시도해 주세요.',
   },
   'Russian': {
     idiomExplanation: 'Объяснение Идиомы',
@@ -238,7 +258,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitMedical: 'Медицина',
     sitDating: 'Свидания',
     sitService: 'Сервис',
-    sitEmergency: 'Чрезвычайная Ситуация'
+    sitEmergency: 'Чрезвычайная Ситуация',
+    offlineTitle: 'Сейчас вы не в сети',
+    offlineMessage: 'Похоже, что соединение с интернетом было потеряно. Проверьте подключение и попробуйте снова.',
   },
   'Arabic': {
     idiomExplanation: 'شرح المصطلح',
@@ -254,7 +276,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitMedical: 'طبي',
     sitDating: 'مواعدة',
     sitService: 'خدمة',
-    sitEmergency: 'طوارئ'
+    sitEmergency: 'طوارئ',
+    offlineTitle: 'أنت غير متصل بالإنترنت حاليًا',
+    offlineMessage: 'يبدو أنك فقدت الاتصال بالإنترنت. تحقق من اتصالك ثم حاول مرة أخرى.',
   },
   'Thai': {
     idiomExplanation: 'คำอธิบายสำนวน',
@@ -273,7 +297,9 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     sitEmergency: 'ฉุกเฉิน'
   ,
     cameraTranslation: 'แปลจากกล้อง',
-    processingImage: 'กำลังประมวลผลรูปภาพ...'}
+    processingImage: 'กำลังประมวลผลรูปภาพ...',
+    offlineTitle: 'ขณะนี้คุณออฟไลน์อยู่',
+    offlineMessage: 'ดูเหมือนว่าคุณสูญเสียการเชื่อมต่ออินเทอร์เน็ต โปรดตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง',}
 };
 
 export const getStr = (lang: string, key: string): string => {

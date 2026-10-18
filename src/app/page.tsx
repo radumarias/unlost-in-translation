@@ -67,7 +67,8 @@ const LANGUAGES = [
   'Russian',
   'Arabic',
   'Romanian',
-  'Thai'
+  'Thai',
+  'Finnish'
 ];
 
 const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
@@ -84,7 +85,8 @@ const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
   'Russian': 'Русский',
   'Arabic': 'العربية',
   'Romanian': 'Română',
-  'Thai': 'ไทย'
+  'Thai': 'ไทย',
+  'Finnish': 'Suomi'
 };
 
 const LANGUAGE_FLAGS: Record<string, string> = {
@@ -101,7 +103,8 @@ const LANGUAGE_FLAGS: Record<string, string> = {
   'Russian': '🇷🇺',
   'Arabic': '🇸🇦',
   'Romanian': '🇷🇴',
-  'Thai': '🇹🇭'
+  'Thai': '🇹🇭',
+  'Finnish': '🇫🇮'
 };
 
 const LANG_CODES: Record<string, string> = {
@@ -117,7 +120,8 @@ const LANG_CODES: Record<string, string> = {
   'Russian': 'ru',
   'Arabic': 'ar',
   'Romanian': 'ro',
-  'Thai': 'th'
+  'Thai': 'th',
+  'Finnish': 'fi'
 };
 
 const TONES = [

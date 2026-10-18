@@ -25,14 +25,14 @@ You must analyze the image, detect the language of any prominent text, and trans
 Translate the text to ${userLanguage}. The detected language can be any language.
 
 CRITICAL: You must provide a brief explanation if the image is a specific food, sign, or cultural item. The translation AND this explanation MUST be written entirely in ${userLanguage}.
-The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai.`;
+The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai, Finnish.`;
     } else if (isSourceAutoDetect) {
       systemPrompt = `You are a helpful translation assistant.
 You must analyze the image, detect the language of any prominent text, and transcribe it.
 Translate the text to ${otherLanguage}. The detected language can be any language.
 
 CRITICAL: You must provide a brief explanation if the image is a specific food, sign, or cultural item. The translation AND this explanation MUST be written entirely in ${otherLanguage}.
-The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai.`;
+The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai, Finnish.`;
     } else {
       systemPrompt = `You are a helpful translation assistant in a conversation between a ${userLanguage} speaker and a ${otherLanguage} speaker.
 You must analyze the image, detect the language of any prominent text, and transcribe it.
@@ -40,7 +40,7 @@ You must analyze the image, detect the language of any prominent text, and trans
 - If the text is in ${otherLanguage} or any other language, translate it to ${userLanguage}.
 
 CRITICAL: You must provide a brief explanation if the image is a specific food, sign, or cultural item. The translation AND this explanation MUST be written entirely in the target language you are translating to.
-The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai.`;
+The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai, Finnish.`;
     }
 
     // Remove the data URI prefix (e.g., data:image/jpeg;base64,) if present

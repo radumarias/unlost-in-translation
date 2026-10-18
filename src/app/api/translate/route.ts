@@ -1,6 +1,9 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import { z } from 'zod';
+import { LANGUAGES } from '../../languages';
+
+const LANGUAGE_LIST = LANGUAGES.join(', ');
 
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY,
@@ -29,7 +32,7 @@ export async function POST(req: Request) {
           : `Translate from ${sourceLanguage} to ${targetLanguage}: "${currentInput}"`,
         schema: isSourceAutoDetect
           ? z.object({
-              detectedSourceLanguage: z.string().describe(`The detected language of the input message. Must be one of: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai, Finnish.`),
+              detectedSourceLanguage: z.string().describe(`The detected language of the input message. Must be one of: ${LANGUAGE_LIST}.`),
               translation: z.string().describe(`The ${targetLanguage} translation.`)
             })
           : z.object({
@@ -60,7 +63,7 @@ ${situation !== 'General' ? `IMPORTANT: The requested situation/context is "${si
    - Provide an \`idiom_explanation\` explaining its meaning.
    - Suggest how a native speaker of the target language would naturally express that same idea (the local equivalent idiom or phrase).
    - Do this even if you successfully translated the meaning into the target language. If no idiom/slang is present, \`idiom_explanation\` should be null.
-The detected language MUST be one of the following: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai, Finnish.`
+The detected language MUST be one of the following: ${LANGUAGE_LIST}.`
       : `You are a highly skilled cultural interpreter. Your goal is to prevent 'lost in translation' moments.
 You are facilitating a conversation between two people. One speaks ${sourceLanguage} and the other speaks ${targetLanguage}.
 
@@ -82,7 +85,7 @@ ${situation !== 'General' ? `IMPORTANT: The requested situation/context is "${si
 
     const schema = isSourceAutoDetect
       ? z.object({
-          detectedSourceLanguage: z.string().describe(`The detected language of the input message. Must be one of: English, Spanish, French, German, Japanese, Italian, Portuguese, Chinese (Mandarin), Korean, Russian, Arabic, Romanian, Thai, Finnish.`),
+          detectedSourceLanguage: z.string().describe(`The detected language of the input message. Must be one of: ${LANGUAGE_LIST}.`),
           translation: z.string().describe(`The ${targetLanguage} translation of the last message.`),
           sanity_check: z.string().describe(`The back-translation (roundtrip) of the ${targetLanguage} text, explaining the true perceived intent in the detected source language.`),
           warning: z.string().nullable().optional().describe('Warning about cultural misunderstanding or offensive translation. Null if safe.'),

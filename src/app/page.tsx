@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { getStr } from './i18n';
+import { LANGUAGES, LANGUAGE_DISPLAY_NAMES, LANGUAGE_FLAGS, LANG_CODES } from './languages';
 
 type Interaction = {
   id: string;
@@ -52,76 +53,6 @@ const CopyButton = ({ text, title, className = "text-gray-400 hover:text-gray-60
       )}
     </button>
   );
-};
-
-const LANGUAGES = [
-  'English',
-  'Spanish',
-  'French',
-  'German',
-  'Japanese',
-  'Italian',
-  'Portuguese',
-  'Chinese (Mandarin)',
-  'Korean',
-  'Russian',
-  'Arabic',
-  'Romanian',
-  'Thai',
-  'Finnish'
-];
-
-const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
-  'Auto-detect': 'Auto-detect',
-  'English': 'English',
-  'Spanish': 'Español',
-  'French': 'Français',
-  'German': 'Deutsch',
-  'Japanese': '日本語',
-  'Italian': 'Italiano',
-  'Portuguese': 'Português',
-  'Chinese (Mandarin)': '中文',
-  'Korean': '한국어',
-  'Russian': 'Русский',
-  'Arabic': 'العربية',
-  'Romanian': 'Română',
-  'Thai': 'ไทย',
-  'Finnish': 'Suomi'
-};
-
-const LANGUAGE_FLAGS: Record<string, string> = {
-  'Auto-detect': '✨',
-  'English': '🇬🇧',
-  'Spanish': '🇪🇸',
-  'French': '🇫🇷',
-  'German': '🇩🇪',
-  'Japanese': '🇯🇵',
-  'Italian': '🇮🇹',
-  'Portuguese': '🇵🇹',
-  'Chinese (Mandarin)': '🇨🇳',
-  'Korean': '🇰🇷',
-  'Russian': '🇷🇺',
-  'Arabic': '🇸🇦',
-  'Romanian': '🇷🇴',
-  'Thai': '🇹🇭',
-  'Finnish': '🇫🇮'
-};
-
-const LANG_CODES: Record<string, string> = {
-  'English': 'en',
-  'Spanish': 'es',
-  'French': 'fr',
-  'German': 'de',
-  'Japanese': 'ja',
-  'Italian': 'it',
-  'Portuguese': 'pt',
-  'Chinese (Mandarin)': 'zh',
-  'Korean': 'ko',
-  'Russian': 'ru',
-  'Arabic': 'ar',
-  'Romanian': 'ro',
-  'Thai': 'th',
-  'Finnish': 'fi'
 };
 
 const TONES = [

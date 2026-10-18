@@ -1,5 +1,7 @@
 // Single source of truth for supported languages, shared by the UI and the API prompts.
-const LANGUAGE_INFO: Record<string, { nativeName: string; flag: string; code: string }> = {
+type LanguageInfo = { nativeName: string; flag: string; code: string };
+
+const LANGUAGE_INFO = {
   'English': { nativeName: 'English', flag: '🇬🇧', code: 'en' },
   'Spanish': { nativeName: 'Español', flag: '🇪🇸', code: 'es' },
   'French': { nativeName: 'Français', flag: '🇫🇷', code: 'fr' },
@@ -14,16 +16,27 @@ const LANGUAGE_INFO: Record<string, { nativeName: string; flag: string; code: st
   'Romanian': { nativeName: 'Română', flag: '🇷🇴', code: 'ro' },
   'Thai': { nativeName: 'ไทย', flag: '🇹🇭', code: 'th' },
   'Finnish': { nativeName: 'Suomi', flag: '🇫🇮', code: 'fi' },
+} as const satisfies Record<string, LanguageInfo>;
+
+export type Language = keyof typeof LANGUAGE_INFO;
+
+const LANGUAGE_ENTRIES = Object.entries(LANGUAGE_INFO) as [Language, LanguageInfo][];
+
+export const LANGUAGES = LANGUAGE_ENTRIES.map(([name]) => name);
+
+// Human-readable list for LLM prompts, e.g. "English, Spanish, ...".
+export const LANGUAGE_LIST = LANGUAGES.join(', ');
+
+export const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
+  'Auto-detect': 'Auto-detect',
+  ...Object.fromEntries(LANGUAGE_ENTRIES.map(([name, { nativeName }]) => [name, nativeName])),
 };
 
-export const LANGUAGES = Object.keys(LANGUAGE_INFO);
+export const LANGUAGE_FLAGS: Record<string, string> = {
+  'Auto-detect': '✨',
+  ...Object.fromEntries(LANGUAGE_ENTRIES.map(([name, { flag }]) => [name, flag])),
+};
 
-export const LANGUAGE_DISPLAY_NAMES: Record<string, string> = { 'Auto-detect': 'Auto-detect' };
-export const LANGUAGE_FLAGS: Record<string, string> = { 'Auto-detect': '✨' };
-export const LANG_CODES: Record<string, string> = {};
-
-for (const [name, { nativeName, flag, code }] of Object.entries(LANGUAGE_INFO)) {
-  LANGUAGE_DISPLAY_NAMES[name] = nativeName;
-  LANGUAGE_FLAGS[name] = flag;
-  LANG_CODES[name] = code;
-}
+export const LANG_CODES: Record<string, string> = Object.fromEntries(
+  LANGUAGE_ENTRIES.map(([name, { code }]) => [name, code])
+);

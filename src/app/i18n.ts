@@ -1,4 +1,7 @@
-export const UI_STRINGS: Record<string, Record<string, string>> = {
+import type { Language } from './languages';
+
+// Keyed by the shared language table so a language added there without UI strings fails to compile.
+export const UI_STRINGS: Record<Language, Record<string, string>> = {
   'English': {
 	phrasebookTitle: 'Offline Phrasebook',
     noFavorites: 'You haven\'t saved any favorite phrases yet.',
@@ -384,5 +387,5 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
 };
 
 export const getStr = (lang: string, key: string): string => {
-  return UI_STRINGS[lang]?.[key] || UI_STRINGS['English'][key];
+  return (UI_STRINGS as Record<string, Record<string, string> | undefined>)[lang]?.[key] || UI_STRINGS['English'][key];
 };

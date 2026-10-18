@@ -2,9 +2,7 @@ import { NextResponse } from 'next/server';
 import { generateObject } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
-import { LANGUAGES } from '../../languages';
-
-const LANGUAGE_LIST = LANGUAGES.join(', ');
+import { LANGUAGES, LANGUAGE_LIST } from '../../languages';
 
 export const maxDuration = 60;
 
@@ -18,6 +16,10 @@ export async function POST(req: Request) {
 
     if (!imageBase64 || !userLanguage || !otherLanguage) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    if (isAutoDetect && isSourceAutoDetect) {
+      return NextResponse.json({ error: 'Select at least one explicit language (source or target)' }, { status: 400 });
     }
 
     let systemPrompt = '';
@@ -53,7 +55,7 @@ The detected language MUST be one of the following: ${LANGUAGE_LIST}.`;
       model: google('gemini-2.5-flash'),
       system: systemPrompt,
       schema: z.object({
-        detectedLanguage: z.string().describe(`The detected language of the text. Must be one of the supported languages.`),
+        detectedLanguage: z.enum(LANGUAGES).describe('The detected language of the text.'),
         originalText: z.string().describe(`A summary or transcription of the text found in the image in its original language. Keep it short.`),
         translation: z.string().describe(`The translation and brief explanation in the appropriate target language based on your instructions.`),
       }),
